@@ -6,6 +6,16 @@ require_once 'php/connect.php';
 session_start();
 
 $firstName = $_SESSION['firstName'];
+$patientId = $_SESSION['patientId'];
+
+$sql = "SELECT patients.PatientID, doctors.FirstName, doctors.LastName, services.ServiceName, appointments.AppointmentDate,
+        appointments.AppointmentID
+                FROM appointments 
+                INNER JOIN doctors ON appointments.DoctorID = doctors.DoctorID
+                INNER JOIN patients ON appointments.PatientID = patients.PatientID
+                INNER JOIN services ON appointments.ServiceID = services.ServiceID 
+                WHERE appointments.PatientID = $patientId AND appointments.Status = 'InReview'";
+                $result = $conn->query($sql);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -35,7 +45,7 @@ $firstName = $_SESSION['firstName'];
         }
 </style>
 <body>
-<section class=" overflow-y-auto">
+<section class="overflow-y-auto ">
   <div class="mt-1 mx-auto max-w-md flex-col items-center justify-center mx-auto md:h-screen lg:py-0">
         
         <!-- appbar -->
@@ -128,8 +138,39 @@ $firstName = $_SESSION['firstName'];
     <div class="mb-2 rounded-lg dark:border-gray-700">
         <div class="px-4 text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white mb-2">My Appointments</div>
 
-        <div class="pb-2 flex overflow-x-auto space-x-4 px-4 no-scrollbar">
-        
+        <div class="">
+           <!-- list of in-review -->
+           <div class="max-w-4xl mx-auto bg-white rounded-lg">
+            <ul class="divide-y divide-gray-200">
+                <!-- Appointment Item -->
+                <?php
+                if ($result->num_rows > 0) {
+                    // Output data of each row
+                    echo '<div class="max-w-4xl mx-auto bg-white rounded-lg">
+                            <ul class="divide-y divide-gray-200">';
+                    // Inside the PHP loop
+                    while ($row = $result->fetch_assoc()) {
+                        $cancelButtonId = 'cancelButton_' . $row["AppointmentID"];
+                        $appointmentDate = date("g:i A - F j, Y", strtotime($row["AppointmentDate"]));
+                        echo '<li class="p-4 flex justify-between items-center">
+                                <div>
+                                    <p class="text-lg font-medium text-gray-900">' . $row["ServiceName"] . '</p>
+                                    <p class="text-sm text-gray-500">'  . $row["FirstName"] . ' ' . $row["LastName"] .  '</p>
+                                    <p class="text-sm text-gray-500">' . $appointmentDate . '</p>
+                                </div>
+                                <button id="' . $cancelButtonId . '" class="cancelButton text-blue-700 bg-blue-100 hover:bg-blue-400 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-red-800">View</button>
+                            </li>';
+                    }
+
+                    echo '</ul>
+                        </div>';
+                } else {
+                    echo "<p class='text-center p-4 text-sm text-gray-500 dark:text-gray-400'>No approved appointment.</p>";
+                }
+                ?>
+                
+            </ul>
+        </div>
         </div>
     </div>
     

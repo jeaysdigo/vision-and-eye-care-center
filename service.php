@@ -35,7 +35,7 @@ if (isset($_GET['id'])) {
   <title>Vision and Eye Care Center</title>
   <link href="https://cdn.jsdelivr.net/npm/flowbite@2.3.0/dist/flowbite.min.css" rel="stylesheet"></head>
 
-<body class="bg-gray-50">
+<body class="">
 <section>
 <div class="mt-1 mx-auto max-w-md flex-col items-center justify-center mx-auto md:h-screen lg:py-0">
         
@@ -52,14 +52,16 @@ if (isset($_GET['id'])) {
         
        
 <div class="container mx-auto py-10 px-4">
-    <div class="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-lg">
+    <div class="max-w-2xl mx-auto bg-white p-6 rounded-lg ">
         <div class="flex flex-col ">
             <h1 class="text-2xl font-medium text-gray-900 mb-2"><?php echo htmlspecialchars($row["ServiceName"]); ?></h1>
             <p class="text-gray-700 mb-4"><?php echo nl2br(htmlspecialchars($row["Description"])); ?></p>
            
         </div>
     </div>
+    <button id="bookBtn" type="button" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Book Now</button>
 </div>
+
     </div>
 </section>
 

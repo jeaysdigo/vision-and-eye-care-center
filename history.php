@@ -6,6 +6,43 @@ require_once 'php/connect.php';
 session_start();
 
 $firstName = $_SESSION['firstName'];
+$patientId = $_SESSION['patientId'];
+$sql = "SELECT patients.PatientID, doctors.FirstName, doctors.LastName, services.ServiceName, appointments.AppointmentDate,
+appointments.AppointmentID
+        FROM appointments 
+        INNER JOIN doctors ON appointments.DoctorID = doctors.DoctorID
+        INNER JOIN patients ON appointments.PatientID = patients.PatientID
+        INNER JOIN services ON appointments.ServiceID = services.ServiceID 
+        WHERE appointments.PatientID = $patientId AND appointments.Status = 'InReview'";
+        
+$sql2 = "SELECT patients.PatientID, doctors.FirstName, doctors.LastName, services.ServiceName, appointments.AppointmentDate,
+        appointments.AppointmentID
+                FROM appointments 
+                INNER JOIN doctors ON appointments.DoctorID = doctors.DoctorID
+                INNER JOIN patients ON appointments.PatientID = patients.PatientID
+                INNER JOIN services ON appointments.ServiceID = services.ServiceID 
+                WHERE appointments.PatientID = $patientId AND appointments.Status = 'Approved'";
+
+$sql3 = "SELECT patients.PatientID, doctors.FirstName, doctors.LastName, services.ServiceName, appointments.AppointmentDate,
+        appointments.AppointmentID
+                FROM appointments 
+                INNER JOIN doctors ON appointments.DoctorID = doctors.DoctorID
+                INNER JOIN patients ON appointments.PatientID = patients.PatientID
+                INNER JOIN services ON appointments.ServiceID = services.ServiceID 
+                WHERE appointments.PatientID = $patientId AND appointments.Status = 'Completed'";
+
+$sql4 = "SELECT patients.PatientID, doctors.FirstName, doctors.LastName, services.ServiceName, appointments.AppointmentDate,
+appointments.AppointmentID
+        FROM appointments 
+        INNER JOIN doctors ON appointments.DoctorID = doctors.DoctorID
+        INNER JOIN patients ON appointments.PatientID = patients.PatientID
+        INNER JOIN services ON appointments.ServiceID = services.ServiceID 
+        WHERE appointments.PatientID = $patientId AND appointments.Status = 'Cancelled'";
+
+$result = $conn->query($sql); 
+$result2 = $conn->query($sql2);
+$result3 = $conn->query($sql3);
+$result4 = $conn->query($sql4);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -26,7 +63,7 @@ $firstName = $_SESSION['firstName'];
 
     
   <section>
-  <div class="mx-auto max-w-md flex-col items-center justify-center px-2 py-2 mx-auto md:h-screen lg:py-0">
+  <div class="mx-auto max-w-md flex-col items-center justify-center px-2 py-2 mx-auto md:h-screen lg:py-0 mb-8 pb-8">
         
         <!-- appbar -->
         <div class="flex items-center justify-between border-gray-200 pb-2">
@@ -43,7 +80,10 @@ $firstName = $_SESSION['firstName'];
     <div class="mb-4 border-b border-gray-200 dark:border-gray-700">
         <ul class="flex -mb-px text-sm font-medium text-center" id="default-tab" data-tabs-toggle="#default-tab-content" role="tablist">
             <li class="w-full focus-within:z-10" role="presentation">
-                <button class="inline-block p-4 border-b-2 rounded-t-lg" id="scheduled-tab" data-tabs-target="#scheduled" type="button" role="tab" aria-controls="scheduled" aria-selected="false">Scheduled</button>
+                <button class="inline-block p-4 border-b-2 rounded-t-lg" id="in-review-tab" data-tabs-target="#in-review" type="button" role="tab" aria-controls="in-review" aria-selected="false">In-Review</button>
+            </li>
+            <li class="w-full focus-within:z-10" role="presentation">
+                <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="approved-tab" data-tabs-target="#approved" type="button" role="tab" aria-controls="dashboard" aria-selected="false">Approved</button>
             </li>
             <li class="w-full focus-within:z-10" role="presentation">
                 <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="completed-tab" data-tabs-target="#completed" type="button" role="tab" aria-controls="dashboard" aria-selected="false">Completed</button>
@@ -55,14 +95,145 @@ $firstName = $_SESSION['firstName'];
         </ul>
     </div>
     <div id="default-tab-content">
-        <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="scheduled" role="tabpanel" aria-labelledby="scheduled-tab">
-            <p class="text-sm text-gray-500 dark:text-gray-400">This is some placeholder content the <strong class="font-medium text-gray-800 dark:text-white">Profile tab's associated content</strong>. Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to control the content visibility and styling.</p>
+        <div class="hidden rounded-lg dark:bg-gray-800" id="in-review" role="tabpanel" aria-labelledby="in-review-tab">
+
+        <!-- list of in-review -->
+        <div class="max-w-4xl mx-auto bg-white rounded-lg">
+            <ul class="divide-y divide-gray-200">
+                <!-- Appointment Item -->
+                <?php
+                if ($result->num_rows > 0) {
+                    // Output data of each row
+                    echo '<div class="max-w-4xl mx-auto bg-white rounded-lg">
+                            <ul class="divide-y divide-gray-200">';
+                    // Inside the PHP loop
+                    while ($row = $result->fetch_assoc()) {
+                        $cancelButtonId = 'cancelButton_' . $row["AppointmentID"];
+                        $appointmentDate = date("g:i A - F j, Y", strtotime($row["AppointmentDate"]));
+                        echo '<li class="p-4 flex justify-between items-center">
+                                <div>
+                                    <p class="text-lg font-medium text-gray-900">' . $row["ServiceName"] . '</p>
+                                    <p class="text-sm text-gray-500">'  . $row["FirstName"] . ' ' . $row["LastName"] .  '</p>
+                                    <p class="text-sm text-gray-500">' . $appointmentDate . '</p>
+                                </div>
+                                <button id="' . $cancelButtonId . '" class="cancelButton text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800">Cancel</button>
+                            </li>';
+                    }
+
+                    echo '</ul>
+                        </div>';
+                } else {
+                    echo "<p class='text-center p-4 text-sm text-gray-500 dark:text-gray-400'>No results found.</p>";
+                }
+                ?>
+                
+            </ul>
         </div>
-        <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="completed" role="tabpanel" aria-labelledby="completed-tab">
-            <p class="text-sm text-gray-500 dark:text-gray-400">This is some placeholder content the <strong class="font-medium text-gray-800 dark:text-white">Dashboard tab's associated content</strong>. Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to control the content visibility and styling.</p>
+        
+   
+
         </div>
-        <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="cancelled" role="tabpanel" aria-labelledby="cancelled-tab">
-            <p class="text-sm text-gray-500 dark:text-gray-400">This is some placeholder content the <strong class="font-medium text-gray-800 dark:text-white">Cancelled tab's associated content</strong>. Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to control the content visibility and styling.</p>
+        <div class="hidden rounded-lg dark:bg-gray-800" id="approved" role="tabpanel" aria-labelledby="approved-tab">
+               <!-- list of approved -->
+               <div class="max-w-4xl mx-auto bg-white rounded-lg">
+            <ul class="divide-y divide-gray-200">
+                <!-- Appointment Item -->
+                <?php
+                if ($result2->num_rows > 0) {
+                    // Output data of each row
+                    echo '<div class="max-w-4xl mx-auto bg-white rounded-lg">
+                            <ul class="divide-y divide-gray-200">';
+                    // Inside the PHP loop
+                    while ($row = $result2->fetch_assoc()) {
+                        $cancelButtonId = 'cancelButton_' . $row["AppointmentID"];
+                        $appointmentDate = date("g:i A - F j, Y", strtotime($row["AppointmentDate"]));
+                        echo '<li class="p-4 flex justify-between items-center">
+                                <div>
+                                    <p class="text-lg font-medium text-gray-900">' . $row["ServiceName"] . '</p>
+                                    <p class="text-sm text-gray-500">'  . $row["FirstName"] . ' ' . $row["LastName"] .  '</p>
+                                    <p class="text-sm text-gray-500">' . $appointmentDate . '</p>
+                                </div>
+                                <button id="' . $cancelButtonId . '" class="cancelButton text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800">Cancel</button>
+                            </li>';
+                    }
+
+                    echo '</ul>
+                        </div>';
+                } else {
+                    echo "<p class='text-center p-4 text-sm text-gray-500 dark:text-gray-400'>No results found.</p>";
+                }
+                ?>
+                
+            </ul>
+        </div>
+        </div>
+        <div class="hidden rounded-lg dark:bg-gray-800" id="completed" role="tabpanel" aria-labelledby="completed-tab">
+              <!-- list of completed -->
+        <div class="max-w-4xl mx-auto bg-white rounded-lg">
+            <ul class="divide-y divide-gray-200">
+                <!-- Appointment Item -->
+                <?php
+                if ($result3->num_rows > 0) {
+                    // Output data of each row
+                    echo '<div class="max-w-4xl mx-auto bg-white rounded-lg">
+                            <ul class="divide-y divide-gray-200">';
+                    // Inside the PHP loop
+                    while ($row = $result3->fetch_assoc()) {
+                        $cancelButtonId = 'cancelButton_' . $row["AppointmentID"];
+                        $appointmentDate = date("g:i A - F j, Y", strtotime($row["AppointmentDate"]));
+                        echo '<li class="p-4 flex justify-between items-center">
+                                <div>
+                                    <p class="text-lg font-medium text-gray-900">' . $row["ServiceName"] . '</p>
+                                    <p class="text-sm text-gray-500">'  . $row["FirstName"] . ' ' . $row["LastName"] .  '</p>
+                                    <p class="text-sm text-gray-500">' . $appointmentDate . '</p>
+                                </div>
+
+                            </li>';
+                    }
+
+                    echo '</ul>
+                        </div>';
+                } else {
+                    echo "<p class='text-center p-4 text-sm text-gray-500 dark:text-gray-400'>No results found.</p>";
+                }
+                ?>
+                
+            </ul>
+        </div>
+        </div>
+        <div class="hidden dark:bg-gray-800" id="cancelled" role="tabpanel" aria-labelledby="cancelled-tab">
+        <!-- list of cancelled -->
+        <div class="max-w-4xl mx-auto bg-white rounded-lg">
+            <ul class="divide-y divide-gray-200">
+                <!-- Appointment Item -->
+                <?php
+                if ($result4->num_rows > 0) {
+                    // Output data of each row
+                    echo '<div class="max-w-4xl mx-auto bg-white rounded-lg">
+                            <ul class="divide-y divide-gray-200">';
+                    // Inside the PHP loop
+                    while ($row = $result4->fetch_assoc()) {
+                        $cancelButtonId = 'cancelButton_' . $row["AppointmentID"];
+                        $appointmentDate = date("g:i A - F j, Y", strtotime($row["AppointmentDate"]));
+                        echo '<li class="p-4 flex justify-between items-center">
+                                <div>
+                                    <p class="text-lg font-medium text-gray-900">' . $row["ServiceName"] . '</p>
+                                    <p class="text-sm text-gray-500">'  . $row["FirstName"] . ' ' . $row["LastName"] .  '</p>
+                                    <p class="text-sm text-gray-500">' . $appointmentDate . '</p>
+                                </div>
+
+                            </li>';
+                    }
+
+                    echo '</ul>
+                        </div>';
+                } else {
+                    echo "<p class='text-center p-4 text-sm text-gray-500 dark:text-gray-400'>No results found.</p>";
+                }
+                ?>
+                
+            </ul>
+        </div>
         </div>
     </div>
 
@@ -108,6 +279,54 @@ $firstName = $_SESSION['firstName'];
         </div>
     </div>
   </section>
+
+  <script>
+    $(document).ready(function() {
+        // Attach click event listener to each cancel button
+        $('.cancelButton').on('click', function() {
+            var appointmentId = $(this).attr('id').replace('cancelButton_', '');
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, cancel it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    console.log('cancellinng', appointmentId);
+                    // Make an AJAX request to cancel the appointment
+                    $.ajax({
+                        type: 'POST',
+                        url: 'php/cancel_book.php', // Replace with the URL of your cancel appointment PHP script
+                        data: { appointmentId: appointmentId },
+                        success: function(response) {
+                            console.log('cancelled', appointmentId);
+                            Swal.fire(
+                                'Cancelled!',
+                                'Your appointment has been cancelled.',
+                                'success'
+                            ).then((result) => {
+                                // Reload the page after successful cancellation
+                                location.reload();
+                            });
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(xhr.responseText);
+                            Swal.fire(
+                                'Error!',
+                                'Failed to cancel the appointment. Please try again.',
+                                'error'
+                            );
+                        }
+                    });
+                }
+            });
+        });
+    });
+</script>
+
 
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script src="https://cdn.jsdelivr.net/npm/flowbite@2.3.0/dist/flowbite.min.js"></script>
