@@ -57,6 +57,9 @@ $result4 = $conn->query($sql4);
 <script src="https://cdn.jsdelivr.net/npm/flowbite@2.3.0/dist/datepicker.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> -->
+<!-- Option 1: Include in HTML -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
 </head>
 <body>
 
@@ -77,7 +80,7 @@ $result4 = $conn->query($sql4);
         </div>
         
         <!-- appointment -->
-    <div class="mb-4 border-b border-gray-200 dark:border-gray-700">
+    <div class="mb-4 border-b border-gray-200 dark:border-gray-700 ">
         <ul class="flex -mb-px text-sm font-medium text-center" id="default-tab" data-tabs-toggle="#default-tab-content" role="tablist">
             <li class="w-full focus-within:z-10" role="presentation">
                 <button class="inline-block p-4 border-b-2 rounded-t-lg" id="in-review-tab" data-tabs-target="#in-review" type="button" role="tab" aria-controls="in-review" aria-selected="false">In-Review</button>
@@ -110,15 +113,23 @@ $result4 = $conn->query($sql4);
                     while ($row = $result->fetch_assoc()) {
                         $cancelButtonId = 'cancelButton_' . $row["AppointmentID"];
                         $appointmentDate = date("g:i A - F j, Y", strtotime($row["AppointmentDate"]));
-                        echo '<li class="p-4 flex justify-between items-center">
-                                <div>
-                                    <p class="text-lg font-medium text-gray-900">' . $row["ServiceName"] . '</p>
-                                    <p class="text-sm text-gray-500">'  . $row["FirstName"] . ' ' . $row["LastName"] .  '</p>
-                                    <p class="text-sm text-gray-500">' . $appointmentDate . '</p>
-                                </div>
-                                <button id="' . $cancelButtonId . '" class="cancelButton text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800">Cancel</button>
-                            </li>';
+                        echo '<li class="p-4 flex flex-row md:flex-row justify-between items-center bg-gray-25 hover:bg-gray-25 rounded-lg mb-4 shadow-sm transition">
+                        <div class="flex items-center">
+                          <div class="p-4 bg-blue-100 rounded-full">
+                            <i class="bi bi-person-fill text-blue-500"></i>
+                          </div>
+                          <div class="p-2 ml-2">
+                            <p class="text-lg p-1 font-medium text-gray-900">'. $row["FirstName"] . ' ' . $row["LastName"] .'</p>
+                            <p class="text-sm p-1 text-gray-500"><i class="bi bi-eye-fill text-gray-400"></i> '  . $row["ServiceName"] .  '</p>
+                            <p class="text-sm  p-1 text-gray-500"><i class="bi bi-calendar-fill text-gray-400"></i> ' . $appointmentDate . '</p>
+                          </div>
+                        </div>
+                        <button id="' . $cancelButtonId . '" class="mt-4 md:mt-0 cancelButton text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
+                          <i class="bi bi-x-lg"></i> Cancel
+                        </button>
+                      </li>';
                     }
+                    
 
                     echo '</ul>
                         </div>';
@@ -130,8 +141,6 @@ $result4 = $conn->query($sql4);
             </ul>
         </div>
         
-   
-
         </div>
         <div class="hidden rounded-lg dark:bg-gray-800" id="approved" role="tabpanel" aria-labelledby="approved-tab">
                <!-- list of approved -->
@@ -147,14 +156,21 @@ $result4 = $conn->query($sql4);
                     while ($row = $result2->fetch_assoc()) {
                         $cancelButtonId = 'cancelButton_' . $row["AppointmentID"];
                         $appointmentDate = date("g:i A - F j, Y", strtotime($row["AppointmentDate"]));
-                        echo '<li class="p-4 flex justify-between items-center">
-                                <div>
-                                    <p class="text-lg font-medium text-gray-900">' . $row["ServiceName"] . '</p>
-                                    <p class="text-sm text-gray-500">'  . $row["FirstName"] . ' ' . $row["LastName"] .  '</p>
-                                    <p class="text-sm text-gray-500">' . $appointmentDate . '</p>
-                                </div>
-                                <button id="' . $cancelButtonId . '" class="cancelButton text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800">Cancel</button>
-                            </li>';
+                        echo '<li class="p-4 flex flex-row md:flex-row justify-between items-center bg-gray-25 hover:bg-gray-25 rounded-lg mb-4 shadow-sm transition">
+                        <div class="flex items-center">
+                          <div class="p-4 bg-blue-100 rounded-full">
+                            <i class="bi bi-person-fill text-blue-500"></i>
+                          </div>
+                          <div class="p-2 ml-2">
+                            <p class="text-lg p-1 font-medium text-gray-900">'. $row["FirstName"] . ' ' . $row["LastName"] .'</p>
+                            <p class="text-sm p-1 text-gray-500"><i class="bi bi-eye-fill text-gray-400"></i> '  . $row["ServiceName"] .  '</p>
+                            <p class="text-sm  p-1 text-gray-500"><i class="bi bi-calendar-fill text-gray-400"></i> ' . $appointmentDate . '</p>
+                          </div>
+                        </div>
+                        <button id="' . $cancelButtonId . '" class="mt-4 md:mt-0 cancelButton text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
+                          <i class="bi bi-x-lg"></i> Cancel
+                        </button>
+                      </li>';
                     }
 
                     echo '</ul>
@@ -177,19 +193,24 @@ $result4 = $conn->query($sql4);
                     // Output data of each row
                     echo '<div class="max-w-4xl mx-auto bg-white rounded-lg">
                             <ul class="divide-y divide-gray-200">';
-                    // Inside the PHP loop
-                    while ($row = $result3->fetch_assoc()) {
-                        $cancelButtonId = 'cancelButton_' . $row["AppointmentID"];
-                        $appointmentDate = date("g:i A - F j, Y", strtotime($row["AppointmentDate"]));
-                        echo '<li class="p-4 flex justify-between items-center">
-                                <div>
-                                    <p class="text-lg font-medium text-gray-900">' . $row["ServiceName"] . '</p>
-                                    <p class="text-sm text-gray-500">'  . $row["FirstName"] . ' ' . $row["LastName"] .  '</p>
-                                    <p class="text-sm text-gray-500">' . $appointmentDate . '</p>
-                                </div>
-
-                            </li>';
-                    }
+                   // Inside the PHP loop
+                   while ($row = $result3->fetch_assoc()) {
+                    $cancelButtonId = 'cancelButton_' . $row["AppointmentID"];
+                    $appointmentDate = date("g:i A - F j, Y", strtotime($row["AppointmentDate"]));
+                    echo '<li class="p-4 flex flex-row md:flex-row justify-between items-center bg-gray-25 hover:bg-gray-25 rounded-lg mb-4 shadow-sm transition">
+                    <div class="flex items-center">
+                      <div class="p-4 bg-blue-100 rounded-full">
+                        <i class="bi bi-person-fill text-blue-500"></i>
+                      </div>
+                      <div class="p-2 ml-2">
+                        <p class="text-lg p-1 font-medium text-gray-900">'. $row["FirstName"] . ' ' . $row["LastName"] .'</p>
+                        <p class="text-sm p-1 text-gray-500"><i class="bi bi-eye-fill text-gray-400"></i> '  . $row["ServiceName"] .  '</p>
+                        <p class="text-sm  p-1 text-gray-500"><i class="bi bi-calendar-fill text-gray-400"></i> ' . $appointmentDate . '</p>
+                      </div>
+                    </div>
+                 
+                  </li>';
+                }
 
                     echo '</ul>
                         </div>';
@@ -211,19 +232,24 @@ $result4 = $conn->query($sql4);
                     // Output data of each row
                     echo '<div class="max-w-4xl mx-auto bg-white rounded-lg">
                             <ul class="divide-y divide-gray-200">';
-                    // Inside the PHP loop
-                    while ($row = $result4->fetch_assoc()) {
-                        $cancelButtonId = 'cancelButton_' . $row["AppointmentID"];
-                        $appointmentDate = date("g:i A - F j, Y", strtotime($row["AppointmentDate"]));
-                        echo '<li class="p-4 flex justify-between items-center">
-                                <div>
-                                    <p class="text-lg font-medium text-gray-900">' . $row["ServiceName"] . '</p>
-                                    <p class="text-sm text-gray-500">'  . $row["FirstName"] . ' ' . $row["LastName"] .  '</p>
-                                    <p class="text-sm text-gray-500">' . $appointmentDate . '</p>
-                                </div>
-
-                            </li>';
-                    }
+                   // Inside the PHP loop
+                   while ($row = $result4->fetch_assoc()) {
+                    $cancelButtonId = 'cancelButton_' . $row["AppointmentID"];
+                    $appointmentDate = date("g:i A - F j, Y", strtotime($row["AppointmentDate"]));
+                    echo '<li class="p-4 flex flex-row md:flex-row justify-between items-center bg-gray-25 hover:bg-gray-25 rounded-lg mb-4 shadow-sm transition">
+                    <div class="flex items-center">
+                      <div class="p-4 bg-blue-100 rounded-full">
+                        <i class="bi bi-person-fill text-blue-500"></i>
+                      </div>
+                      <div class="p-2 ml-2">
+                        <p class="text-lg p-1 font-medium text-gray-900">'. $row["FirstName"] . ' ' . $row["LastName"] .'</p>
+                        <p class="text-sm p-1 text-gray-500"><i class="bi bi-eye-fill text-gray-400"></i> '  . $row["ServiceName"] .  '</p>
+                        <p class="text-sm  p-1 text-gray-500"><i class="bi bi-calendar-fill text-gray-400"></i> ' . $appointmentDate . '</p>
+                      </div>
+                    </div>
+                 
+                  </li>';
+                }
 
                     echo '</ul>
                         </div>';

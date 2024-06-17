@@ -20,8 +20,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $zipcode = mysqli_real_escape_string($conn, $_POST['zipcode']);
 
     // Validate password match
-    if ($password != $confirm_password) {
-        echo "error"; // Passwords don't match
+    if ($password !== $confirm_password) {
+        echo "Passwords do not match";
         exit();
     }
 
@@ -37,21 +37,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $result_check_number = mysqli_query($conn, $sql_check_number);
 
     if ($result_check_number && mysqli_num_rows($result_check_number) > 0) {
-        echo "error"; // Phone number already in use
+        echo "Phone number already in use";
+        exit();
+    }
+
+    // Check if the email already exists in the database
+    $sql_check_email = "SELECT * FROM patients WHERE Email = '$email'";
+    $result_check_email = mysqli_query($conn, $sql_check_email);
+
+    if ($result_check_email && mysqli_num_rows($result_check_email) > 0) {
+        echo "Email already in use";
         exit();
     }
 
     // Hash the password
-    // $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
     // Insert user data into database
     $sql = "INSERT INTO patients (FirstName, LastName, Email, Password, DateOfBirth, Gender, ContactNumber, Occupation, Address, Municipality, City, ZipCode)
-            VALUES ('$first_name', '$last_name', '$email', '$password', '$bday', '$gender', '$contact', '$occupation', '$address', '$municipality', '$city', '$zipcode')";
+            VALUES ('$first_name', '$last_name', '$email', '$hashed_password', '$bday', '$gender', '$contact', '$occupation', '$address', '$municipality', '$city', '$zipcode')";
 
     if (mysqli_query($conn, $sql)) {
-        echo "success"; // User registered successfully
+        echo "User registered successfully";
     } else {
-        echo "error"; // Error inserting data
+        error_log("Error: " . mysqli_error($conn));
+        echo "Error registering user";
     }
 
     // Close database connection

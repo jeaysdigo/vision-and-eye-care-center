@@ -131,7 +131,7 @@ $(document).ready(function(){
     </div>
     
     
-    <button id="bookBtn" type="button" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Book Now</button>
+    <button id="bookBtn" type="button" class="w-full h-12 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Book Appointment</button>
 </div>
 
 
@@ -175,6 +175,8 @@ $(document).ready(function(){
     var timetable = document.getElementById('timetable');
     var times = [
         '10:00:00', '10:30:00', '11:00:00', 
+        '11:30:00', '12:00:00', '12:30:00', 
+        '13:00:00', '13:30:00', '14:00:00', 
         // Add more times as needed
     ];
 

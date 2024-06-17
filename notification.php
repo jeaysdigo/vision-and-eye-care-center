@@ -6,7 +6,7 @@ require_once 'php/connect.php';
 session_start();
 
 $firstName = $_SESSION['firstName'];
-$firstName = $_SESSION['firstName'];
+$patientId = $_SESSION['patientId'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -42,9 +42,69 @@ $firstName = $_SESSION['firstName'];
             <div class="w-10 h-10"></div> <!-- Placeholder for equal spacing, adjust as needed -->
         </div>
 
-        <div class="w-full bg-white-50 rounded-lg dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
-        </div>
+       <!-- Notification Container -->
+<div class="flex flex-col space-y-4">
+    <?php
+
+
+    // Check connection
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    // SQL query to fetch notifications for both approved and cancelled appointments
+    $sql = "SELECT notifications.*, appointments.AppointmentDate, appointments.Status, doctors.FirstName, doctors.LastName
+            FROM notifications
+            JOIN appointments ON notifications.user_id = appointments.PatientID AND notifications.type = 'Appointment'
+            JOIN doctors ON appointments.DoctorID = doctors.DoctorID
+            WHERE appointments.Status IN ('Approved', 'Cancelled') AND notifications.user_id = '$patientId'
+            ORDER BY notifications.created_at DESC";
+
+    $result = $conn->query($sql);
+
+    // Output notification cards
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            // Determine notification type and icon
+            $iconClass = $row['Status'] === 'Approved' ? "text-green-500" : "text-red-500";
+            $notificationType = $row['Status'] === 'Approved' ? 'approved' : 'cancelled';
+    ?>
+
+            <!-- Notification Card -->
+            <div class="bg-white border rounded-lg p-4 max-w-sm mx-auto mt-2">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0">
+                        <!-- Notification Icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 <?php echo $iconClass; ?>" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <?php if ($row['Status'] === 'Approved') { ?>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            <?php } else { ?>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            <?php } ?>
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <!-- Notification Content -->
+                        <p class="text-sm font-medium text-gray-900 p-1"><?php echo $row['title']; ?></p>
+                        <p class="text-sm text-gray-500 p-1">Your appointment on <span class="font-medium"><?php echo date('F j, Y \a\t g:i A', strtotime($row['AppointmentDate'])); ?></span> has been <?php echo $notificationType; ?> by Dr. <?php echo $row['FirstName'] . ' ' . $row['LastName']; ?></p>
+                        <p class="text-sm text-gray-400 p-1"><?php echo date('F j, Y \a\t g:i A', strtotime($row['created_at'])); ?></p>
+                    </div>
+                </div>
+            </div>
+
+    <?php
+        }
+    } else {
+        echo "<p>No notifications found.</p>";
+    }
+    $conn->close();
+    ?>
+</div>
+
+
+        
 </section>
+
 
 
       <!-- bottombar  -->

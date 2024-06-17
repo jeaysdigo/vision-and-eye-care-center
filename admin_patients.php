@@ -188,7 +188,7 @@ if ($result->num_rows > 0) {
                     <?php else: ?>
                         <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                             <td colspan="4" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
-                                No services available.
+                                No patients available.
                             </td>
                         </tr>
                     <?php endif; ?>

@@ -24,6 +24,12 @@ $sql = "SELECT patients.PatientID, doctors.FirstName, doctors.LastName, services
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vision and Eye Care Center</title>
   <link href="https://cdn.jsdelivr.net/npm/flowbite@2.3.0/dist/flowbite.min.css" rel="stylesheet"></head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   <script src="/app.js"></script>
 <style>
 
 
@@ -45,7 +51,14 @@ $sql = "SELECT patients.PatientID, doctors.FirstName, doctors.LastName, services
         }
 </style>
 <body>
-<section class="overflow-y-auto ">
+<script>
+ if (!navigator.serviceWorker.controller) {
+     navigator.serviceWorker.register("/sw.js").then(function(reg) {
+         console.log("Service worker has been registered for scope: " + reg.scope);
+     });
+ }
+</script>
+<section class="overflow-y-auto">
   <div class="mt-1 mx-auto max-w-md flex-col items-center justify-center mx-auto md:h-screen lg:py-0">
         
         <!-- appbar -->
@@ -136,7 +149,10 @@ $sql = "SELECT patients.PatientID, doctors.FirstName, doctors.LastName, services
 
     <!-- my bookings -->
     <div class="mb-2 rounded-lg dark:border-gray-700">
-        <div class="px-4 text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white mb-2">My Appointments</div>
+    <div class="flex justify-between items-center px-4 text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white mb-2">
+            <span>My Appointments</span>
+            <a href="history.php" class="text-base sm:text-lg text-blue-500 hover:underline">See all</a>
+        </div>
 
         <div class="">
            <!-- list of in-review -->
@@ -148,19 +164,26 @@ $sql = "SELECT patients.PatientID, doctors.FirstName, doctors.LastName, services
                     // Output data of each row
                     echo '<div class="max-w-4xl mx-auto bg-white rounded-lg">
                             <ul class="divide-y divide-gray-200">';
-                    // Inside the PHP loop
-                    while ($row = $result->fetch_assoc()) {
-                        $cancelButtonId = 'cancelButton_' . $row["AppointmentID"];
-                        $appointmentDate = date("g:i A - F j, Y", strtotime($row["AppointmentDate"]));
-                        echo '<li class="p-4 flex justify-between items-center">
-                                <div>
-                                    <p class="text-lg font-medium text-gray-900">' . $row["ServiceName"] . '</p>
-                                    <p class="text-sm text-gray-500">'  . $row["FirstName"] . ' ' . $row["LastName"] .  '</p>
-                                    <p class="text-sm text-gray-500">' . $appointmentDate . '</p>
-                                </div>
-                                <button id="' . $cancelButtonId . '" class="cancelButton text-blue-700 bg-blue-100 hover:bg-blue-400 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-red-800">View</button>
-                            </li>';
-                    }
+                   // Inside the PHP loop
+                   while ($row = $result->fetch_assoc()) {
+                    $cancelButtonId = 'cancelButton_' . $row["AppointmentID"];
+                    $appointmentDate = date("g:i A - F j, Y", strtotime($row["AppointmentDate"]));
+                    echo '<li class="p-4 flex flex-row md:flex-row justify-between items-center bg-gray-25 hover:bg-gray-25 rounded-lg mb-4 shadow-sm transition">
+                    <div class="flex items-center">
+                      <div class="p-4 bg-blue-100 rounded-full">
+                        <i class="bi bi-person-fill text-blue-500"></i>
+                      </div>
+                      <div class="p-2 ml-2">
+                        <p class="text-lg p-1 font-medium text-gray-900">'. $row["FirstName"] . ' ' . $row["LastName"] .'</p>
+                        <p class="text-sm p-1 text-gray-500"><i class="bi bi-eye-fill text-gray-400"></i> '  . $row["ServiceName"] .  '</p>
+                        <p class="text-sm  p-1 text-gray-500"><i class="bi bi-calendar-fill text-gray-400"></i> ' . $appointmentDate . '</p>
+                      </div>
+                    </div>
+                    <button id="' . $cancelButtonId . '" class="mt-4 md:mt-0 cancelButton text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
+                      <i class="bi bi-x-lg"></i> Cancel
+                    </button>
+                  </li>';
+                }
 
                     echo '</ul>
                         </div>';
@@ -214,6 +237,53 @@ $sql = "SELECT patients.PatientID, doctors.FirstName, doctors.LastName, services
                 </a>
             </div>
         </div>
+
+        <script>
+    $(document).ready(function() {
+        // Attach click event listener to each cancel button
+        $('.cancelButton').on('click', function() {
+            var appointmentId = $(this).attr('id').replace('cancelButton_', '');
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, cancel it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    console.log('cancellinng', appointmentId);
+                    // Make an AJAX request to cancel the appointment
+                    $.ajax({
+                        type: 'POST',
+                        url: 'php/cancel_book.php', // Replace with the URL of your cancel appointment PHP script
+                        data: { appointmentId: appointmentId },
+                        success: function(response) {
+                            console.log('cancelled', appointmentId);
+                            Swal.fire(
+                                'Cancelled!',
+                                'Your appointment has been cancelled.',
+                                'success'
+                            ).then((result) => {
+                                // Reload the page after successful cancellation
+                                location.reload();
+                            });
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(xhr.responseText);
+                            Swal.fire(
+                                'Error!',
+                                'Failed to cancel the appointment. Please try again.',
+                                'error'
+                            );
+                        }
+                    });
+                }
+            });
+        });
+    });
+</script>
 
         <script src="https://cdn.jsdelivr.net/npm/flowbite@2.3.0/dist/flowbite.min.js"></script>
 </body>
