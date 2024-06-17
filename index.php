@@ -1,9 +1,13 @@
 <?php
-// Include the connect.php file
 require_once 'php/connect.php';
 
-// Start the session
 session_start();
+
+
+if (!isset($_SESSION['firstName']) || !isset($_SESSION['patientId'])) {
+    header("Location: login.php");
+    exit();
+}
 
 $firstName = $_SESSION['firstName'];
 $patientId = $_SESSION['patientId'];
