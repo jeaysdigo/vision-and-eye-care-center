@@ -23,7 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($email) {
         // Hash the new password
-        // $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
+        $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
 
         // Update the password in the database
         $stmt_update = $conn->prepare("UPDATE doctors SET Password=? WHERE Email=?");

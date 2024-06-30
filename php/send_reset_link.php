@@ -42,7 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $mail->Port       = 587;
 
             //Recipients
-            $mail->setFrom('jeaysdigo@outlook.com', 'Your ss');
+            $mail->setFrom('jeaysdigo@outlook.com', 'Password Reset');
             $mail->addAddress($email);
 
             // Content

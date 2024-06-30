@@ -4,6 +4,9 @@ require_once 'php/connect.php';
 
 // Start the session
 session_start();
+if (!isset($_SESSION['patientId'])) { 
+  header('location: index.php');
+}
 
 $firstName = $_SESSION['firstName'];
 $patientId = $_SESSION['patientId'];
@@ -14,130 +17,136 @@ $patientId = $_SESSION['patientId'];
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vision and Eye Care Center</title>
-  <link href="https://cdn.jsdelivr.net/npm/flowbite@2.3.0/dist/flowbite.min.css" rel="stylesheet"></head>
-<style>
-    /* Hide scrollbar for Chrome, Safari and Opera */
-    .no-scrollbar::-webkit-scrollbar {
-        display: none;
-    }
-
-    /* Hide scrollbar for IE, Edge and Firefox */
-    .no-scrollbar {
-        -ms-overflow-style: none;  /* IE and Edge */
-        scrollbar-width: none;  /* Firefox */
-    }
-</style>
+  <link href="https://cdn.jsdelivr.net/npm/flowbite@2.3.0/dist/flowbite.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="js/script.js"></script>
+</head>
 <body class="bg-gray-50">
-<section>
-<div class="mx-auto max-w-md flex-col items-center justify-center px-2 py-2 mx-auto md:h-screen lg:py-0">
-        
-        <!-- appbar -->
-        <div class="bg-white flex items-center justify-between mb-4 border-b border-gray-200 pb-2">
-            <button onclick="window.history.back();" class="text-gray-600 hover:text-blue-500 ml-2">
-                <svg class="w-8 h-8 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12l4-4m-4 4 4 4"/>
-                </svg>
-            </button>
-            <div class="text-center font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">Notifications</div>
-            <div class="w-10 h-10"></div> <!-- Placeholder for equal spacing, adjust as needed -->
-        </div>
 
-       <!-- Notification Container -->
-<div class="flex flex-col space-y-4">
-    <?php
+<nav class="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+  <div class="px-3 py-3 lg:px-5 lg:pl-3">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center justify-start rtl:justify-end">
+        <button onclick="window.history.back();" class="text-gray-600 hover:text-blue-500 ml-2">
+          <svg class="w-8 h-8 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12l4-4m-4 4 4 4"/>
+          </svg>
+        </button>
+        <div class="text-center p-2 flex font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">Notification</div>
+        <div class="w-10 h-10"></div> 
+      </div>
+    </div>
+  </div>
+</nav>
 
-
-    // Check connection
-    if ($conn->connect_error) {
+<?php require_once 'php/aside.php'; ?>
+<section class="mb-8 pb-8">
+  <div class="p-4 py-8 mt-8 sm:ml-64 ">
+    
+    <!-- Notification Container -->
+    <div class="">
+     
+      <?php
+      // Check connection
+      if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
-    }
+      }
 
-    // SQL query to fetch notifications for both approved and cancelled appointments
-    $sql = "SELECT notifications.*, appointments.AppointmentDate, appointments.Status, doctors.FirstName, doctors.LastName
-            FROM notifications
-            JOIN appointments ON notifications.user_id = appointments.PatientID AND notifications.type = 'Appointment'
-            JOIN doctors ON appointments.DoctorID = doctors.DoctorID
-            WHERE appointments.Status IN ('Approved', 'Cancelled') AND notifications.user_id = '$patientId'
-            ORDER BY notifications.created_at DESC";
+      // SQL query to fetch notifications for approved appointments only
+      $sql = "SELECT notifications.*, appointments.AppointmentDate, appointments.Status, doctors.FirstName, doctors.LastName
+              FROM notifications
+              JOIN appointments ON notifications.user_id = appointments.PatientID AND notifications.type = 'Appointment'
+              JOIN doctors ON appointments.DoctorID = doctors.DoctorID
+              WHERE appointments.Status = 'Approved'
+                AND notifications.user_id = '$patientId'
+                AND notifications.is_read = '0'
+              ORDER BY notifications.created_at DESC";
 
-    $result = $conn->query($sql);
+      $result = $conn->query($sql);
 
-    // Output notification cards
-    if ($result->num_rows > 0) {
+      // Output notification cards
+      if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
-            // Determine notification type and icon
-            $iconClass = $row['Status'] === 'Approved' ? "text-green-500" : "text-red-500";
-            $notificationType = $row['Status'] === 'Approved' ? 'approved' : 'cancelled';
-    ?>
+          // Notification icon class for approved appointments
+          $iconClass = "text-green-500";
+      ?>
 
-            <!-- Notification Card -->
-            <div class="bg-white border rounded-lg p-4 max-w-sm mx-auto mt-2">
-                <div class="flex items-start">
-                    <div class="flex-shrink-0">
-                        <!-- Notification Icon -->
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 <?php echo $iconClass; ?>" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <?php if ($row['Status'] === 'Approved') { ?>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            <?php } else { ?>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                            <?php } ?>
-                        </svg>
-                    </div>
-                    <div class="ml-3">
-                        <!-- Notification Content -->
-                        <p class="text-sm font-medium text-gray-900 p-1"><?php echo $row['title']; ?></p>
-                        <p class="text-sm text-gray-500 p-1">Your appointment on <span class="font-medium"><?php echo date('F j, Y \a\t g:i A', strtotime($row['AppointmentDate'])); ?></span> has been <?php echo $notificationType; ?> by Dr. <?php echo $row['FirstName'] . ' ' . $row['LastName']; ?></p>
-                        <p class="text-sm text-gray-400 p-1"><?php echo date('F j, Y \a\t g:i A', strtotime($row['created_at'])); ?></p>
-                    </div>
-                </div>
-            </div>
+      <!-- Notification Card -->
+      <div class="bg-white border rounded-lg p-4 max-w-sm mx-auto mt-2">
+        <div class="flex items-start">
+          <div class="flex-shrink-0">
+       
+            <!-- Notification Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 <?php echo $iconClass; ?>" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+          </div>
+          <div class="ml-3">
+            <!-- Notification Content -->
+            <p class="text-sm font-medium text-gray-900 p-1"><?php echo htmlspecialchars($row['title']); ?></p>
+            <p class="text-sm text-gray-500 p-1">Your appointment on <span class="font-medium"><?php echo date('F j, Y \a\t g:i A', strtotime($row['AppointmentDate'])); ?></span> has been approved.</p>
+            <p class="text-sm text-gray-400 p-1"><?php echo date('F j, Y \a\t g:i A', strtotime($row['created_at'])); ?></p>
+          </div>
+        </div>
+      </div>
 
-    <?php
+      <?php
         }
-    } else {
-        echo "<p>No notifications found.</p>";
-    }
-    $conn->close();
-    ?>
-</div>
-
-
-        
+      } else {
+        echo "<center><p class='mt-4'>No notifications found.</p></center>";
+      }
+      $conn->close();
+      ?>
+    </div>
+  </div>
 </section>
 
+<?php require_once 'php/bottombar.php'; ?>
 
+<script>
+$(document).ready(function() {
+  $("#mark-all-as-read").click(function() {
+    $.ajax({
+      url: "", // Pointing to the same page
+      method: "POST",
+      data: { update_all_notifications: true },
+      success: function(response) {
+        location.reload(); // Reload the page to reflect changes
+      },
+      error: function(xhr, status, error) {
+        alert("An error occurred: " + error);
+      }
+    });
+  });
+});
+</script>
 
-      <!-- bottombar  -->
-      <div class="fixed bottom-0 left-0 z-50 w-full h-16 bg-white border-t border-gray-200 dark:bg-gray-700 dark:border-gray-600">
-            <div class="grid h-full max-w-lg grid-cols-4 mx-auto font-medium">
-                <a href="index.php" class="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 dark:hover:bg-gray-800 group">
-                    <svg class="w-5 h-5 mb-2 text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M11.293 3.293a1 1 0 0 1 1.414 0l6 6 2 2a1 1 0 0 1-1.414 1.414L19 12.414V19a2 2 0 0 1-2 2h-3a1 1 0 0 1-1-1v-3h-2v3a1 1 0 0 1-1 1H7a2 2 0 0 1-2-2v-6.586l-.293.293a1 1 0 0 1-1.414-1.414l2-2 6-6Z" clip-rule="evenodd"/>
-                    </svg>
-                    <span class="text-sm text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500">Home</span>
-                </a>
-                <a href="book.php" class="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 dark:hover:bg-gray-800 group">
-                    <svg class="w-5 h-5 mb-2 text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M5 5a1 1 0 0 0 1-1 1 1 0 1 1 2 0 1 1 0 0 0 1 1h1a1 1 0 0 0 1-1 1 1 0 1 1 2 0 1 1 0 0 0 1 1h1a1 1 0 0 0 1-1 1 1 0 1 1 2 0 1 1 0 0 0 1 1 2 2 0 0 1 2 2v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a2 2 0 0 1 2-2ZM3 19v-7a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Zm6.01-6a1 1 0 1 0-2 0 1 1 0 0 0 2 0Zm2 0a1 1 0 1 1 2 0 1 1 0 0 1-2 0Zm6 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0Zm-10 4a1 1 0 1 1 2 0 1 1 0 0 1-2 0Zm6 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0Zm2 0a1 1 0 1 1 2 0 1 1 0 0 1-2 0Z" clip-rule="evenodd"/>
-                    </svg>
-                    <span class="text-sm text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500">Book</span>
-                </a>
-                <a href="notification.php" class="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 dark:hover:bg-gray-800 group">
-                    <svg class="w-5 h-5 mb-2 text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M17.133 12.632v-1.8a5.406 5.406 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V3.1a1 1 0 0 0-2 0v2.364a.955.955 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C6.867 15.018 5 15.614 5 16.807 5 17.4 5 18 5.538 18h12.924C19 18 19 17.4 19 16.807c0-1.193-1.867-1.789-1.867-4.175ZM8.823 19a3.453 3.453 0 0 0 6.354 0H8.823Z"/>
-                    </svg>
-                    <span class="text-sm text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500">Notification</span>
-                </a>
-                <a href="profile.php" class="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 dark:hover:bg-gray-800 group">
-                    <svg class="w-5 h-5 mb-2 text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm0 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm0 13a8.949 8.949 0 0 1-4.951-1.488A3.987 3.987 0 0 1 9 13h2a3.987 3.987 0 0 1 3.951 3.512A8.949 8.949 0 0 1 10 18Z"/>
-                    </svg>
-                    <span class="text-sm text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500">Profile</span>
-                </a>
-            </div>
-        </div>
-        <!-- bottombar  -->
+<?php
+if (isset($_POST['update_all_notifications'])) {
+  // Reconnect to the database since the connection was closed earlier
+  include 'php/connect.php';
 
-        <script src="https://cdn.jsdelivr.net/npm/flowbite@2.3.0/dist/flowbite.min.js"></script>
+  // Update all notifications' is_read status to 1 for the current user
+  $updateSql = "UPDATE notifications SET is_read = '1' WHERE user_id = ? AND is_read = '0'";
+  
+  // Prepare and bind
+  $updateStmt = $conn->prepare($updateSql);
+  $updateStmt->bind_param("i", $patientId);
+  $updateStmt->execute();
+
+  if ($updateStmt->affected_rows > 0) {
+    echo "All notifications marked as read.";
+  } else {
+    echo "No notifications to update.";
+  }
+
+  // Close the statement and database connection
+  $updateStmt->close();
+  $conn->close();
+}
+?>
+
+<script src="https://cdn.jsdelivr.net/npm/flowbite@2.3.0/dist/flowbite.min.js"></script>
 </body>
 </html>

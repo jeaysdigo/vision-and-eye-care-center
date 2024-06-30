@@ -5,14 +5,17 @@ require_once 'php/connect.php';
 // Start the session
 session_start();
 
+if (!isset($_SESSION['doctorId'])) { 
+    header('location: index.php');
+}
+
+
 // Fetch and sanitize testID from URL parameter
 if (isset($_GET['id'])) {
-    $testID = $_GET['id'];
+    $testID = intval($_GET['id']);
     
     // Perform database query to fetch test information for $testID
-    $sql = "SELECT *
-            FROM test t 
-            WHERE t.testID = ?";
+    $sql = "SELECT * FROM test WHERE testID = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param('i', $testID);
     $stmt->execute();
@@ -24,10 +27,10 @@ if (isset($_GET['id'])) {
         <!DOCTYPE html>
         <html lang="en">
         <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Test Results</title>
-          <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Test Results</title>
+            <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
         </head>
         <body class="bg-gray-100">
         <div class="container mx-auto p-4">
@@ -48,7 +51,7 @@ if (isset($_GET['id'])) {
                         <p class="text-gray-700"><strong>Case No:</strong> <?= htmlspecialchars($testData['case_no']); ?></p>
                         <p class="text-gray-700"><strong>CO No:</strong> <?= htmlspecialchars($testData['co_no']); ?></p>
                         <p class="text-gray-700"><strong>Date:</strong> <?= htmlspecialchars(date('F j, Y', strtotime($testData['date']))); ?></p>
-                        <p class="text-gray-700"><strong>Doctor:</strong> <?= htmlspecialchars($testData['FirstName']) . " " . htmlspecialchars($testData['LastName']); ?></p>
+                        <p class="text-gray-700"><strong>Patient:</strong> <?= htmlspecialchars($testData['FirstName']) . " " . htmlspecialchars($testData['LastName']); ?></p>
                         <p class="text-gray-700"><strong>Patient ID:</strong> <?= htmlspecialchars($testData['PatientID']); ?></p>
                     </div>
                     <div>
@@ -80,8 +83,8 @@ if (isset($_GET['id'])) {
                             <p class="text-gray-700"><strong>BP:</strong> <?= htmlspecialchars($testData['bp_sys']) . "/" . htmlspecialchars($testData['bp_dia']) ?></p>
                             <p class="text-gray-700"><strong>Respiratory Rate:</strong> <?= htmlspecialchars($testData['resp_rate']); ?></p>
                             <p class="text-gray-700"><strong>Pulse Rate:</strong> <?= htmlspecialchars($testData['pulse_rate']); ?></p>
-                            <p class="text-gray-700"><strong>Glasses OD:</strong> <?= htmlspecialchars($testData['glasses_od']); ?></p>
-                            <p class="text-gray-700"><strong>Glasses OS:</strong> <?= htmlspecialchars($testData['glasses_os']); ?></p>
+                            <p class="text-gray-700"><strong>Glasses OD (Sph/Cyl/Add):</strong> <?= htmlspecialchars($testData['glasses_od_sph']) . "/" . htmlspecialchars($testData['glasses_od_cyl']) . "/" . htmlspecialchars($testData['glasses_od_add']); ?></p>
+                            <p class="text-gray-700"><strong>Glasses OS (Sph/Cyl/Add):</strong> <?= htmlspecialchars($testData['glasses_os_sph']) . "/" . htmlspecialchars($testData['glasses_os_cyl']) . "/" . htmlspecialchars($testData['glasses_os_add']); ?></p>
                         </div>
                         <div>
                             <p class="text-gray-700"><strong>Contact Lens OD:</strong> <?= htmlspecialchars($testData['contact_lens_od']); ?></p>
@@ -93,15 +96,25 @@ if (isset($_GET['id'])) {
                         </div>
                     </div>
                 </div>
+
+                <!-- Additional Medical Details -->
+                <div class="mt-6">
+                    <h3 class="font-bold text-xl text-gray-900">Additional Medical Details</h3>
+                    <?php foreach ($testData as $key => $value) {
+                        if (!in_array($key, ['testID', 'PatientID', 'DoctorID', 'FirstName', 'LastName', 'DateOfBirth', 'Gender', 'ContactNumber', 'Occupation', 'Email', 'Address', 'Municipality', 'City', 'ZipCode', 'case_no', 'co_no', 'date'])) {
+                            echo "<p class='text-gray-700'><strong>" . htmlspecialchars(ucwords(str_replace('_', ' ', $key))) . ":</strong> " . htmlspecialchars($value) . "</p>";
+                        }
+                    } ?>
+                </div>
             </div>
         </div>
         </body>
         </html>
         <?php
     } else {
-        echo "Test details not found.";
+        header('location: error.php');
     }
 } else {
-    echo "Invalid test ID.";
+    header('location: error.php');
 }
 ?>

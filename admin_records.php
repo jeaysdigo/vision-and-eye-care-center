@@ -16,7 +16,8 @@ if (!isset($_SESSION['doctorId'])) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vision and Eye Care Center</title>
   <link href="https://cdn.jsdelivr.net/npm/flowbite@2.3.0/dist/flowbite.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <!-- <link rel="stylesheet" href="css/styles.css"> -->
 </head>
 <body>
@@ -49,13 +50,18 @@ if (!isset($_SESSION['doctorId'])) {
   </div>
 </nav>
 
-
 <?php include_once 'php/aside_admin.php'; ?>
 
 
 <?php 
+
 // Fetch services data
-$sql = "SELECT * FROM doctors WHERE isAdmin != 1";
+$sql = "SELECT test.testID, test.case_no, test.walkin, test.co_no, doctors.DoctorID, doctors.FirstName AS DoctorFirstName, doctors.LastName AS DoctorLastName, test.FirstName AS PatientFirstName, test.LastName AS PatientLastName, test.date, test.PatientID 
+        FROM test
+        INNER JOIN doctors
+        ON test.DoctorID = doctors.DoctorID
+        ORDER BY test.date DESC";
+
 $result = $conn->query($sql);
 
 // Initialize an empty array to store services
@@ -69,10 +75,11 @@ if ($result->num_rows > 0) {
 }?>
 
 <div class="p-4 sm:ml-64">
-    <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm rounded-lg dark:border-gray-700 mt-14">
-        <div class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white mb-4">Doctors</div>
-        
-        <div class="mb-4 flex items-center justify-between">
+<div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm rounded-lg dark:border-gray-700 mt-14">
+<div class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white mb-4">Medical Records</div>
+
+
+<div class="mb-4 flex items-center justify-between">
             <div class="relative mt-1 lg:w-64 xl:w-96">
                 <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                     <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -81,78 +88,90 @@ if ($result->num_rows > 0) {
                 </div>
                 <input type="text" name="search" id="search" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg pl-10 p-2  focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Search">
             </div>
-            <a href="signup_doctor.php" class="inline-flex items-center justify-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+            <a href="doctor_test.php" class="inline-flex items-center justify-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 <svg class="w-5 h-5 mr-2 -ml-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path>
                 </svg>
-                Add doctor
+                Add Test
             </a>
         </div>
 
 
-        
-        <div class="relative overflow-x-auto sm:rounded-lg">
-            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                    <tr>
-                        <!-- <th scope="col" class="px-6 py-3"><span class="sr-only">Image</span></th> -->
-                        <th scope="col" class="px-6 py-3">Name</th>
-                        <th scope="col" class="px-6 py-3">Contact Number</th>
-                        <th scope="col" class="px-6 py-3">Email</th>
-                        <th scope="col" class="px-6 py-3">Address</th>
-                        <th scope="col" class="px-6 py-3">Registered on</th>
-                        <th scope="col" class="px-6 py-3"><span class="sr-only">Edit</span></th>
-                    </tr>
-                </thead>
-                <tbody id="table">
-                <?php if (!empty($services)): ?>
-                    <?php foreach ($services as $service): ?>
-                        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                    
-                            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                <?= htmlspecialchars($service['FirstName']) . " " .  htmlspecialchars($service['LastName'])  ?>
-                            </th>
-                            <td class="px-6 py-4">
-                                <?= htmlspecialchars($service['ContactNumber']) ?>
-                            </td>
-                            <td class="px-6 py-4">
-                                <?= htmlspecialchars($service['Email']) ?>
-                            </td>
-                            <td class="px-6 py-4">
-                                <?= htmlspecialchars($service['Address']) ?>
-                            </td>
-                            <td class="px-6 py-4">
-                                <?= $service['DateCreated'] ?>
-                            </td>
-                            <td class="px-6 py-4 text-right">
-                                <!-- <button type="button"data-modal-target="edit-modal" data-modal-toggle="edit-modal" data-service-id="<?php echo $service['ServiceID'] ?>" class="edit-service-button inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path>
-                                        <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"></path>
-                                    </svg>
-                                    Edit
-                                </button> -->
-                                <button type="button" data-modal-toggle="delete-user-modal" data-service-id="<?php echo $service['DoctorID'] ?>"  class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-red-600 rounded-lg hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:focus:ring-red-900">
-                                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                                    </svg>
-                                    Delete
-                                </button>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                    <?php else: ?>
-                        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                            <td colspan="5" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
-                                No registered doctors.
-                            </td>
-                        </tr>
-                    <?php endif; ?>
 
-                </tbody>
-            </table>
-            <div id="noRecordsMessage" class="hidden text-center text-gray-500 dark:text-gray-400">No records found.</div>
-        </div>
+<div class="relative overflow-x-auto sm:rounded-lg">
+    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+                <th scope="col" class="px-6 py-3">Case No.</th>
+                <th scope="col" class="px-6 py-3">CO. No.</th>
+                <th scope="col" class="px-6 py-3">Patient</th>
+                <th scope="col" class="px-6 py-3">Doctor</th>
+                <th scope="col" class="px-6 py-3">Date Created</th>
+                <th scope="col" class="px-6 py-3">Appointment</th>
+                <th scope="col" class="px-6 py-3"><span class="sr-only">Edit</span></th>
+            </tr>
+        </thead>
+        <tbody id="table">
+            <?php if (!empty($services)): ?>
+                <?php foreach ($services as $service): ?>
+                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                            <?= htmlspecialchars($service['case_no']) ?>
+                        </th>
+                        <td class="px-6 py-4">
+                            <?= htmlspecialchars($service['co_no']) ?>
+                        </td>
+                        <td class="px-6 py-4">
+                            <?= htmlspecialchars($service['PatientFirstName']) . " " . htmlspecialchars($service['PatientLastName']) ?>
+                        </td>
+                        <td class="px-6 py-4">
+                            <?= htmlspecialchars($service['DoctorFirstName']) . " " . htmlspecialchars($service['DoctorLastName']) ?>
+                        </td>
+                        <td class="px-6 py-4">
+                            <?= date("g:i A - F j, Y", strtotime($service["date"])); ?>
+                        </td>
+                        <td class="px-6 py-4">
+                            <?php  
+                            if (htmlspecialchars($service['walkin']) == 1) {
+                                echo "Walk-In";
+                                
+                            }
+                            else {
+                                echo "With Appointment";
+                            }
+                           
+                            
+                            ?>
+                        </td>
+                        <td class="px-6 py-4 text-right">
+                            <a href="view_test.php?id=<?= $service["testID"] ?>" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-600 rounded-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-red-900">
+                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" d="M4.998 7.78C6.729 6.345 9.198 5 12 5c2.802 0 5.27 1.345 7.002 2.78a12.713 12.713 0 0 1 2.096 2.183c.253.344.465.682.618.997.14.286.284.658.284 1.04s-.145.754-.284 1.04a6.6 6.6 0 0 1-.618.997 12.712 12.712 0 0 1-2.096 2.183C17.271 17.655 14.802 19 12 19c-2.802 0-5.27-1.345-7.002-2.78a12.712 12.712 0 0 1-2.096-2.183 6.6 6.6 0 0 1-.618-.997C2.144 12.754 2 12.382 2 12s.145-.754.284-1.04c.153-.315.365-.653.618-.997A12.714 12.714 0 0 1 4.998 7.78ZM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" clip-rule="evenodd"/>
+                                </svg>
+                                View
+                            </a>
+                            <button type="button" data-modal-toggle="delete-user-modal" data-service-id="<?= $service['testID'] ?>" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-red-600 rounded-lg hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:focus:ring-red-900">
+                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                </svg>
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                    <td colspan="6" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                        No record available.
+                    </td>
+                </tr>
+            <?php endif; ?>
+        </tbody>
+    </table>
+    <div id="noRecordsMessage" class="hidden text-center text-gray-500 dark:text-gray-400">No records found.</div>
+
+</div>
+
     </div>
 </div>
 
@@ -315,12 +334,12 @@ if ($result->num_rows > 0) {
         // Show SweetAlert2 confirmation dialog
         Swal.fire({
             title: 'Are you sure?',
-            text: 'You will not be able to recover this service!',
+            text: 'You will not be able to recover this action',
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
+            confirmButtonColor: 'red',
+            cancelButtonColor: 'gray',
+            confirmButtonText: 'Delete'
         }).then((result) => {
             // If user confirms deletion
             if (result.isConfirmed) {
@@ -329,17 +348,21 @@ if ($result->num_rows > 0) {
 
                 // Make an AJAX request to delete the service
                 $.ajax({
-                    url: 'php/delete_doctor.php', // Replace with your PHP script to handle deletion
+                    url: 'php/delete_record.php', // Replace with your PHP script to handle deletion
                     method: 'POST',
                     data: { service_id: serviceId },
                     success: function (response) {
                         // Display success message
-                        Swal.fire(
-                            'Deleted!',
-                            'Your service has been deleted.',
-                            'success'
-                        );
-                        
+                        Swal.fire({
+                            title: 'Deleted successfully',
+                            text: 'Record has been deleted.',
+                            icon: 'success',
+            
+                            confirmButtonColor: 'blue',
+                    
+                            confirmButtonText: 'Okay'
+                        }),
+                                        
                         // You can also remove the corresponding row from the table if needed
                         deleteButton.closest('tr').remove();
                     },
@@ -347,7 +370,7 @@ if ($result->num_rows > 0) {
                         // Handle error
                         Swal.fire(
                             'Error!',
-                            'Failed to delete the service.',
+                            'Failed to delete the patient.',
                             'error'
                         );
                     }

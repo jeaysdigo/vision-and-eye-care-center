@@ -1,23 +1,47 @@
 <?php
 // Include database connection file
-include_once 'connect.php';
+require_once 'connect.php';
 
-// Check if form is submitted
+// Function to sanitize user input
+function sanitizeInput($conn, $input) {
+    return mysqli_real_escape_string($conn, $input);
+}
+
+// Function to check if email or phone number already exists
+function checkIfExists($conn, $table, $field, $value) {
+    $sql = "SELECT * FROM $table WHERE $field = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "s", $value);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_store_result($stmt);
+    return mysqli_stmt_num_rows($stmt) > 0;
+}
+
+// Function to insert user data
+function insertUser($conn, $first_name, $last_name, $email, $hashed_password, $bday, $gender, $contact, $occupation, $address, $municipality, $city, $zipcode) {
+    $sql = "INSERT INTO patients (FirstName, LastName, Email, Password, DateOfBirth, Gender, ContactNumber, Occupation, Address, Municipality, City, ZipCode) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "ssssssssssss", $first_name, $last_name, $email, $hashed_password, $bday, $gender, $contact, $occupation, $address, $municipality, $city, $zipcode);
+    return mysqli_stmt_execute($stmt);
+}
+
+// Main process on form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Escape user inputs for security
-    $first_name = mysqli_real_escape_string($conn, $_POST['first_name']);
-    $last_name = mysqli_real_escape_string($conn, $_POST['last_name']);
-    $email = mysqli_real_escape_string($conn, $_POST['email']);
-    $password = mysqli_real_escape_string($conn, $_POST['password']);
-    $confirm_password = mysqli_real_escape_string($conn, $_POST['confirm_password']);
-    $bday = mysqli_real_escape_string($conn, $_POST['bday']);
-    $gender = mysqli_real_escape_string($conn, $_POST['gender']);
-    $contact = mysqli_real_escape_string($conn, $_POST['contact']);
-    $occupation = mysqli_real_escape_string($conn, $_POST['occupation']);
-    $address = mysqli_real_escape_string($conn, $_POST['address']);
-    $municipality = mysqli_real_escape_string($conn, $_POST['municipality']);
-    $city = mysqli_real_escape_string($conn, $_POST['city']);
-    $zipcode = mysqli_real_escape_string($conn, $_POST['zipcode']);
+    // Sanitize and validate inputs
+    $first_name = sanitizeInput($conn, $_POST['first_name']);
+    $last_name = sanitizeInput($conn, $_POST['last_name']);
+    $email = sanitizeInput($conn, $_POST['email']);
+    $password = sanitizeInput($conn, $_POST['password']);
+    $confirm_password = sanitizeInput($conn, $_POST['confirm_password']);
+    $bday = sanitizeInput($conn, $_POST['bday']);
+    $gender = sanitizeInput($conn, $_POST['gender']);
+    $contact = sanitizeInput($conn, $_POST['contact']);
+    $occupation = sanitizeInput($conn, $_POST['occupation']);
+    $address = sanitizeInput($conn, $_POST['address']);
+    $municipality = sanitizeInput($conn, $_POST['municipality']);
+    $city = sanitizeInput($conn, $_POST['city']);
+    $zipcode = sanitizeInput($conn, $_POST['zipcode']);
 
     // Validate password match
     if ($password !== $confirm_password) {
@@ -32,20 +56,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $contact = "0" . substr($contact, 2);
     }
 
-    // Check if the phone number already exists in the database
-    $sql_check_number = "SELECT * FROM patients WHERE ContactNumber = '$contact'";
-    $result_check_number = mysqli_query($conn, $sql_check_number);
-
-    if ($result_check_number && mysqli_num_rows($result_check_number) > 0) {
+    // Check if email or phone number already exists
+    if (checkIfExists($conn, "patients", "ContactNumber", $contact)) {
         echo "Phone number already in use";
         exit();
     }
 
-    // Check if the email already exists in the database
-    $sql_check_email = "SELECT * FROM patients WHERE Email = '$email'";
-    $result_check_email = mysqli_query($conn, $sql_check_email);
-
-    if ($result_check_email && mysqli_num_rows($result_check_email) > 0) {
+    if (checkIfExists($conn, "patients", "Email", $email)) {
         echo "Email already in use";
         exit();
     }
@@ -54,13 +71,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
     // Insert user data into database
-    $sql = "INSERT INTO patients (FirstName, LastName, Email, Password, DateOfBirth, Gender, ContactNumber, Occupation, Address, Municipality, City, ZipCode)
-            VALUES ('$first_name', '$last_name', '$email', '$hashed_password', '$bday', '$gender', '$contact', '$occupation', '$address', '$municipality', '$city', '$zipcode')";
-
-    if (mysqli_query($conn, $sql)) {
+    if (insertUser($conn, $first_name, $last_name, $email, $hashed_password, $bday, $gender, $contact, $occupation, $address, $municipality, $city, $zipcode)) {
         echo "User registered successfully";
     } else {
-        error_log("Error: " . mysqli_error($conn));
+        error_log("Error registering user");
         echo "Error registering user";
     }
 
