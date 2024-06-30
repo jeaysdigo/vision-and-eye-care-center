@@ -205,58 +205,7 @@ if (isset($patientId)) {
         
    
     </div>
-        
-        <!-- <div class="w-full p-4 bg-white-50 rounded-lg dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
-        <div class="">
-        <div>
-            
-            <div class="bg-gray-50 border rounded-full w-24 h-24 flex items-center justify-center mx-auto overflow-hidden">
-                <img src="assets/profile.png" class="w-full object-cover" alt="Profile Icon">
-            </div>
 
-            <p class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white text-center my-2">
-                <?php echo $_SESSION['firstName'] . " " . $_SESSION['lastName']; ?>
-            </p>
-            <p class="text-gray-600 text-center">
-                <?php echo $_SESSION['email']; ?>
-            </p>
-            </div>
-        </div>
-
-            </div>
-            <span class="px-2 text-gray-500 ">General</span>
-            <div class="h-full overflow-y-auto bg-white dark:bg-gray-800">
-                <ul class="space-y-2 font-medium">
-                    <li>
-                        <a href="history.php" class="flex items-center p-4 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                        <span class="ms-3">My Appointments</span>
-                        </a>
-                    </li>
-                </ul>
-                <ul class="space-y-2 font-medium">
-                    <li>
-                        <a href="account.php" class="flex items-center p-4 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                        <span class="ms-3">Edit Profile</span>
-                        </a>
-                    </li>
-                </ul>
-                <ul class="space-y-2 font-medium">
-                    <li>
-                        <a href="about.php" class="flex items-center p-4 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                        <span class="ms-3">About us</span>
-                        </a>
-                    </li>
-                </ul>
-                <ul class="space-y-2 font-medium">
-                    <li>
-                        <a href="logout.php" class="flex items-center p-4 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                        <span class="ms-3">Logout</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-
-        </div> -->
     </div>
 </section>
 

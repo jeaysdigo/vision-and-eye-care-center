@@ -97,10 +97,6 @@ if ($result->num_rows > 0) {
             <tr>
                 <th scope="col" class="px-6 py-3">Case No.</th>
                 <th scope="col" class="px-6 py-3">CO. No.</th>
-                <th scope="col" class="px-6 py-3">Patient</th>
-                <th scope="col" class="px-6 py-3">Doctor</th>
-                <th scope="col" class="px-6 py-3">Date Created</th>
-                <th scope="col" class="px-6 py-3">Appointment</th>
                 <th scope="col" class="px-6 py-3"><span class="sr-only">Edit</span></th>
             </tr>
         </thead>
@@ -114,28 +110,7 @@ if ($result->num_rows > 0) {
                         <td class="px-6 py-4">
                             <?= htmlspecialchars($service['co_no']) ?>
                         </td>
-                        <td class="px-6 py-4">
-                            <?= htmlspecialchars($service['PatientFirstName']) . " " . htmlspecialchars($service['PatientLastName']) ?>
-                        </td>
-                        <td class="px-6 py-4">
-                            <?= htmlspecialchars($service['DoctorFirstName']) . " " . htmlspecialchars($service['DoctorLastName']) ?>
-                        </td>
-                        <td class="px-6 py-4">
-                            <?= date("g:i A - F j, Y", strtotime($service["date"])); ?>
-                        </td>
-                        <td class="px-6 py-4">
-                            <?php  
-                            if (htmlspecialchars($service['walkin']) == 1) {
-                                echo "Walk-In";
-                                
-                            }
-                            else {
-                                echo "With Appointment";
-                            }
-                           
-                            
-                            ?>
-                        </td>
+
                         <td class="px-6 py-4 text-right">
                             <a href="view_test.php?id=<?= $service["testID"] ?>" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-600 rounded-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-red-900">
                                 <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
