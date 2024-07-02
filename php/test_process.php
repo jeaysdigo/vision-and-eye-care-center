@@ -105,7 +105,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // step 4
     $objective_refraction_static_retinoscopy_od = sanitizeInput($_POST['objective_refraction_static_retinoscopy_od']);
+    $objective_refraction_static_retinoscopy_od_over = sanitizeInput($_POST['objective_refraction_static_retinoscopy_od_over']);
     $objective_refraction_static_retinoscopy_os = sanitizeInput($_POST['objective_refraction_static_retinoscopy_os']);
+    $objective_refraction_static_retinoscopy_os_over = sanitizeInput($_POST['objective_refraction_static_retinoscopy_os_over']);
     $objective_refraction_dynamic_retinoscopy_od = sanitizeInput($_POST['objective_refraction_dynamic_retinoscopy_od']);
     $objective_refraction_dynamic_retinoscopy_os = sanitizeInput($_POST['objective_refraction_dynamic_retinoscopy_os']);
 
@@ -339,7 +341,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         motor_sensory_proj_test_os,
 
         objective_refraction_static_retinoscopy_od,
+        objective_refraction_static_retinoscopy_od_over,
         objective_refraction_static_retinoscopy_os,
+        objective_refraction_static_retinoscopy_os_over,
         objective_refraction_dynamic_retinoscopy_od,
         objective_refraction_dynamic_retinoscopy_os,
 
@@ -564,7 +568,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         '$motorSensoryProjTestOs',
 
         '$objective_refraction_static_retinoscopy_od',
+        '$objective_refraction_static_retinoscopy_od_over',
         '$objective_refraction_static_retinoscopy_os',
+        '$objective_refraction_static_retinoscopy_os_over',
         '$objective_refraction_dynamic_retinoscopy_od',
         '$objective_refraction_dynamic_retinoscopy_os',
 
@@ -705,7 +711,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Execute the query
     if (mysqli_query($conn, $sql)) {
-        echo "Record inserted successfully.";
+        echo "success";
     } else {
         echo "Error: " . mysqli_error($conn);
     }

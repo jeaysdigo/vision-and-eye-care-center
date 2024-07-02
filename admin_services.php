@@ -17,6 +17,8 @@ if (!isset($_SESSION['doctorId'])) {
   <title>Vision and Eye Care Center</title>
   <link href="https://cdn.jsdelivr.net/npm/flowbite@2.3.0/dist/flowbite.min.css" rel="stylesheet"> <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <!-- <link rel="stylesheet" href="css/styles.css"> -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
@@ -172,21 +174,19 @@ if ($result->num_rows > 0) {
                 </button>
             </div>
             <!-- Modal body -->
-            <form class="p-4 md:p-5" method="POST" id="add-service-form" action="php/add_service.php"enctype="multipart/form-data">
+            <form class="p-4 md:p-5" method="POST" id="add-service-form" enctype="multipart/form-data">
                 <div class="grid gap-4 mb-4 grid-cols-2">
                     <div class="col-span-2">
                         <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name</label>
-                        <input type="text" name="name" id="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Type service name" required="">
+                        <input type="text" name="name" id="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Type service name" required>
                     </div>
                     <div class="col-span-2">
                         <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"> Description</label>
-                        <textarea id="description" name="description"  rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Write clinic service description"></textarea>                    
+                        <textarea required id="description" name="description" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Write clinic service description"></textarea>                    
                     </div>
                     <div class="col-span-2">
                         <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="icon">Upload Image</label>
-                        <input class="block text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 
-                        focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" 
-                        aria-describedby="icon" id="icon" name="icon" type="file">
+                        <input required class="block text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" aria-describedby="icon" id="icon" name="icon" type="file">
                         <div class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="icon">Upload the icon of the service.</div>
                     </div>
                 </div>
@@ -247,6 +247,35 @@ if ($result->num_rows > 0) {
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+    $(document).ready(function() {
+    $('#add-service-form').on('submit', function(e) {
+        e.preventDefault(); // Prevent the form from submitting via the browser
+
+        var formData = new FormData(this);
+
+        $.ajax({
+            url: 'php/add_service.php',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: response,
+                });
+            },
+            error: function(xhr, status, error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An error occurred: ' + xhr.responseText,
+                });
+            }
+        });
+    });
+});
     $(document).ready(function () {
         
         $('.edit-service-button').click(function () {

@@ -1,9 +1,6 @@
 <?php
-// Include the connect.php file
-require_once 'php/connect.php';
-
-// Start the session
 session_start();
+require_once 'php/connect.php';
 if (!isset($_SESSION['doctorId'])) { 
     header('location: index.php');
 }

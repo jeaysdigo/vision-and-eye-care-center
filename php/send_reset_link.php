@@ -8,13 +8,23 @@ use PHPMailer\PHPMailer\Exception;
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = filter_var($_POST["email"], FILTER_SANITIZE_EMAIL);
 
-    // Check if email exists in the database
+    // Check if email exists in the doctors table
     $stmt = $conn->prepare("SELECT DoctorID FROM doctors WHERE Email=?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $stmt->bind_result($user_id);
     $stmt->fetch();
     $stmt->close();
+
+    // If not found in doctors, check in patients
+    if (!$user_id) {
+        $stmt = $conn->prepare("SELECT PatientID FROM patients WHERE Email=?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $stmt->bind_result($user_id);
+        $stmt->fetch();
+        $stmt->close();
+    }
 
     if ($user_id) {
         // Generate a unique token
@@ -28,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->close();
 
         // Send the password reset link via email
-        $reset_link = "localhost/reset_password.php?token=" . $token;
+        $reset_link = "http://localhost/reset_password.php?token=" . $token;
 
         $mail = new PHPMailer(true);
         try {

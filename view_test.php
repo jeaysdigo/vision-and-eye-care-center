@@ -32,9 +32,9 @@ if (isset($_GET['id'])) {
             <title>Test Results</title>
             <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
         </head>
-        <body class=" ">
+        <body class="bg-gray-50">
         <div class="container mx-auto p-4">
-            <div class="bg-white rounded-lg">
+            <div class="bg-white rounded-lg p-4">
                 <div class="flex justify-between items-center mb-8">
                     <button onclick="window.history.back();" class="text-gray-600 hover:text-blue-500">
                         <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -759,7 +759,14 @@ if (isset($_GET['id'])) {
                                         <div class="w-2/3">
                                             <p class="text-gray-900 sm:text-sm"><?= htmlspecialchars($testData['objective_refraction_static_retinoscopy_od']); ?></p>
                                         </div>
+                                        <div class="w-1/3">
+                                            <p for="glasses_od" class="text-gray-700">20/</p>
+                                        </div>
+                                        <div class="w-2/3">
+                                            <p class="text-gray-900 sm:text-sm"><?= htmlspecialchars($testData['objective_refraction_static_retinoscopy_od_over']); ?></p>
+                                        </div>
                                     </div>
+                                  
 
                                     <div class="flex">
                                         <div class="w-1/3">
@@ -767,6 +774,12 @@ if (isset($_GET['id'])) {
                                         </div>
                                         <div class="w-2/3">
                                             <p class="text-gray-900 sm:text-sm"><?= htmlspecialchars($testData['objective_refraction_static_retinoscopy_os']) ?></p>
+                                        </div>
+                                        <div class="w-1/3">
+                                            <p for="glasses_od" class="text-gray-700">20/</p>
+                                        </div>
+                                        <div class="w-2/3">
+                                            <p class="text-gray-900 sm:text-sm"><?= htmlspecialchars($testData['objective_refraction_static_retinoscopy_os_over']); ?></p>
                                         </div>
                                     </div>
                                 </div>
@@ -1414,6 +1427,12 @@ if (isset($_GET['id'])) {
                                 <div class="w-1/2">
                                     <p class="text-gray-900 sm:text-sm"><?= htmlspecialchars($testData['trial_framing_distance_od']) ?></p>
                                 </div>
+                                <div class="w-1/2">
+                                    <p class="sm:mt-0">20/</p>
+                                </div>
+                                <div class="w-1/2">
+                                    <p class="text-gray-900 sm:text-sm"><?= htmlspecialchars($testData['trial_framing_distance_od_over']) ?></p>
+                                </div>
                             </div>
 
                             <div class="flex mb-2">
@@ -1423,20 +1442,8 @@ if (isset($_GET['id'])) {
                                 <div class="w-1/2">
                                     <p class="text-gray-900 sm:text-sm"><?= htmlspecialchars($testData['trial_framing_distance_os']) ?></p>
                                 </div>
-                            </div>
-
-                            <div class="flex mb-2">
                                 <div class="w-1/2">
-                                    <p class="sm:mt-0">OD Over</p>
-                                </div>
-                                <div class="w-1/2">
-                                    <p class="text-gray-900 sm:text-sm"><?= htmlspecialchars($testData['trial_framing_distance_od_over']) ?></p>
-                                </div>
-                            </div>
-
-                            <div class="flex mb-2">
-                                <div class="w-1/2">
-                                    <p class="sm:mt-0">OS Over</p>
+                                    <p class="sm:mt-0">20/</p>
                                 </div>
                                 <div class="w-1/2">
                                     <p class="text-gray-900 sm:text-sm"><?= htmlspecialchars($testData['trial_framing_distance_os_over']) ?></p>
@@ -1457,6 +1464,12 @@ if (isset($_GET['id'])) {
                                 <div class="w-1/2">
                                     <p class="text-gray-900 sm:text-sm"><?= htmlspecialchars($testData['trial_framing_add_od']) ?></p>
                                 </div>
+                                <div class="w-1/2">
+                                    <p class="sm:mt-0">20/</p>
+                                </div>
+                                <div class="w-1/2">
+                                    <p class="text-gray-900 sm:text-sm"><?= htmlspecialchars($testData['trial_framing_add_od_over']) ?></p>
+                                </div>
                             </div>
 
                             <div class="flex mb-2">
@@ -1466,20 +1479,8 @@ if (isset($_GET['id'])) {
                                 <div class="w-1/2">
                                     <p class="text-gray-900 sm:text-sm"><?= htmlspecialchars($testData['trial_framing_add_os']) ?></p>
                                 </div>
-                            </div>
-
-                            <div class="flex mb-2">
                                 <div class="w-1/2">
-                                    <p class="sm:mt-0">OD Over</p>
-                                </div>
-                                <div class="w-1/2">
-                                    <p class="text-gray-900 sm:text-sm"><?= htmlspecialchars($testData['trial_framing_add_od_over']) ?></p>
-                                </div>
-                            </div>
-
-                            <div class="flex mb-2">
-                                <div class="w-1/2">
-                                    <p class="sm:mt-0">OS Over</p>
+                                    <p class="sm:mt-0">20/</p>
                                 </div>
                                 <div class="w-1/2">
                                     <p class="text-gray-900 sm:text-sm"><?= htmlspecialchars($testData['trial_framing_add_os_over']) ?></p>

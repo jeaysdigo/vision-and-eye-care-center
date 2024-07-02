@@ -1,7 +1,6 @@
 <?php
-require_once 'php/connect.php';
-
 session_start();
+require_once 'php/connect.php';
 
 
 if (!isset($_SESSION['firstName']) || !isset($_SESSION['patientId'])) {

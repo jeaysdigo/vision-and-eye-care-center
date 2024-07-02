@@ -122,6 +122,7 @@ if (isset($_GET['id'])) {
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fabric@4.5.1/dist/fabric.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <style>
     /* Stepper styles */
@@ -631,18 +632,35 @@ if (isset($_GET['id'])) {
             </div>
     </div>
 
-    <!-- Step 4 -->
-    <div class="step">
-      Objective Refraction
+      <!-- Step 4 -->
+      <div class="step">
+    <p class="font-medium mb-2">Objective Refraction</p>
 
-      Static Retinoscopy 
-        <label for="objective_refraction_static_retinoscopy_od">OD:</label>
-        <input type="text" id="objective_refraction_static_retinoscopy_od" name="objective_refraction_static_retinoscopy_od" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5">
-
-        <label for="objective_refraction_static_retinoscopy_os">OS:</label>
-        <input type="text" id="objective_refraction_static_retinoscopy_os" name="objective_refraction_static_retinoscopy_os" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5">
-
-        Dynamic Retinoscopy 
+      Static Retinoscopy <br>
+      <div class="flex">
+      <div class="">
+            <label for="objective_refraction_static_retinoscopy_od">OD:</label>
+            <input type="text" id="objective_refraction_static_retinoscopy_od" name="objective_refraction_static_retinoscopy_od" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5">
+       </div>
+       <div class="">
+        <label for="objective_refraction_static_retinoscopy_od_over">20/</label>
+            <input type="text" id="objective_refraction_static_retinoscopy_od_over" name="objective_refraction_static_retinoscopy_od_over" class="ml-2 bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5">
+            
+       </div>
+      </div>
+      <div class="flex">
+      <div class="">
+            <label for="objective_refraction_static_retinoscopy_os">OS:</label>
+            <input type="text" id="objective_refraction_static_retinoscopy_os" name="objective_refraction_static_retinoscopy_os" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5">
+       </div>
+       <div class="">
+        <label for="objective_refraction_static_retinoscopy_os_over">20/</label>
+            <input type="text" id="objective_refraction_static_retinoscopy_os_over" name="objective_refraction_static_retinoscopy_os_over" class="ml-2 bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5">
+            
+       </div>
+      </div>
+      <p class="font-medium mb-2"> Dynamic Retinoscopy </p>
+       
         <label for="objective_refraction_dynamic_retinoscopy_od">OD:</label>
         <input type="text" id="objective_refraction_dynamic_retinoscopy_od" name="objective_refraction_dynamic_retinoscopy_od" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5">
 
@@ -1223,7 +1241,8 @@ if (isset($_GET['id'])) {
       <button type="button" id="redoButton" class="hidden w-1/2 stepper-button h-12 text-blue-700 bg-blue-100 hover:bg-blue-300 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2">Redo</button>
       <button type="button" id="clear" class="w-1/3 stepper-button h-12 text-blue-700 bg-blue-100 hover:bg-blue-300 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2">Clear</button>
       </div>
-      <script src="https://cdn.jsdelivr.net/npm/fabric"></script>
+      <!-- <script src="https://cdn.jsdelivr.net/npm/fabric"></script> -->
+    
     </div>
     
 
@@ -1669,170 +1688,86 @@ $(document).ready(function() {
 });
 </script>
 
-<script>
-$(document).ready(function() {
-    // Initialize Fabric canvas and other functionality
-    var canvas = new fabric.Canvas('drawingCanvas', {
-        isDrawingMode: true,
-        cancelable: true
-    });
-    var canvas2 = new fabric.Canvas('drawingCanvas2', {
-        isDrawingMode: true,
-        cancelable: true
-    });
-    canvas.freeDrawingBrush.color = "red";
-    canvas.freeDrawingBrush.width = 4;
-    canvas2.freeDrawingBrush.color = "red";
-    canvas2.freeDrawingBrush.width = 4;
+ <script>
+        $(document).ready(function() {
+            var canvas = new fabric.Canvas('drawingCanvas', {
+                isDrawingMode: true,
+                cancelable: true
+            });
+            var canvas2 = new fabric.Canvas('drawingCanvas2', {
+                isDrawingMode: true,
+                cancelable: true
+            });
 
-    // Function to load a fixed image if needed
-    function loadFixedImage() {
-        const imageUrl = 'assets/step9.jpg'; // Replace with the path to your fixed image
-        const imageUrl2 = 'assets/step11.jpg'; // Replace with the path to your fixed image
-        fabric.Image.fromURL(imageUrl, function(img) {
-            img.scaleToWidth(canvas.width);
-            img.scaleToHeight(canvas.height);
-            canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+            canvas.freeDrawingBrush.color = "red";
+            canvas.freeDrawingBrush.width = 4;
+            canvas2.freeDrawingBrush.color = "red";
+            canvas2.freeDrawingBrush.width = 4;
+
+            // Function to load fixed images
+            function loadFixedImages() {
+                const imageUrl1 = 'assets/step9.jpg';
+                const imageUrl2 = 'assets/step11.jpg';
+                fabric.Image.fromURL(imageUrl1, function(img) {
+                    img.scaleToWidth(canvas.width);
+                    img.scaleToHeight(canvas.height);
+                    canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+                });
+                fabric.Image.fromURL(imageUrl2, function(img) {
+                    img.scaleToWidth(canvas2.width);
+                    img.scaleToHeight(canvas2.height);
+                    canvas2.setBackgroundImage(img, canvas2.renderAll.bind(canvas2));
+                });
+            }
+            loadFixedImages();
+
+            // Undo/Redo functionality
+            var undoStack = [];
+            var redoStack = [];
+            var undoStack2 = [];
+            var redoStack2 = [];
+
+            function saveState(canvas, stack) {
+                var json = JSON.stringify(canvas.toDatalessJSON());
+                stack.push(json);
+            }
+
+            function undo(canvas, undoStack, redoStack) {
+                if (undoStack.length > 0) {
+                    var json = undoStack.pop();
+                    redoStack.push(json);
+                    canvas.loadFromJSON(JSON.parse(json), function() {
+                        canvas.renderAll();
+                    });
+                }
+            }
+
+            function redo(canvas, undoStack, redoStack) {
+                if (redoStack.length > 0) {
+                    var json = redoStack.pop();
+                    undoStack.push(json);
+                    canvas.loadFromJSON(JSON.parse(json), function() {
+                        canvas.renderAll();
+                    });
+                }
+            }
+
+            function clearCanvas(canvas, undoStack, redoStack, loadImage) {
+                canvas.clear();
+                undoStack.length = 0;
+                redoStack.length = 0;
+                loadImage();
+            }
+
+            // Event listeners for canvas buttons
+            $('#undoButton').click(() => undo(canvas, undoStack, redoStack));
+            $('#redoButton').click(() => redo(canvas, undoStack, redoStack));
+            $('#clear').click(() => clearCanvas(canvas, undoStack, redoStack, loadFixedImages));
+            $('#undoButton2').click(() => undo(canvas2, undoStack2, redoStack2));
+            $('#redoButton2').click(() => redo(canvas2, undoStack2, redoStack2));
+            $('#clear2').click(() => clearCanvas(canvas2, undoStack2, redoStack2, loadFixedImages));
         });
-        fabric.Image.fromURL(imageUrl2, function(img) {
-            img.scaleToWidth(canvas2.width);
-            img.scaleToHeight(canvas2.height);
-            canvas2.setBackgroundImage(img, canvas2.renderAll.bind(canvas2));
-        });
-    }
-    loadFixedImage();
-
-    // Function to load a fixed image if needed
-    function loadFixedImage2() {
-        const imageUrl2 = 'assets/step11.jpg'; // Replace with the path to your fixed image
-        fabric.Image.fromURL(imageUrl2, function(img) {
-            img.scaleToWidth(canvas2.width);
-            img.scaleToHeight(canvas2.height);
-            canvas2.setBackgroundImage(img, canvas2.renderAll.bind(canvas2));
-        });
-    }
-    loadFixedImage2();
-
-    // Undo/Redo functionality
-    var undoStack = [];
-    var redoStack = [];
-    var undoStack2 = [];
-    var redoStack2 = [];
-
-    function saveState() {
-        var json = JSON.stringify(canvas.toDatalessJSON());
-        undoStack.push(json);
-        redoStack = []; // Clear redo stack
-    }
-    function saveState2() {
-        var json = JSON.stringify(canvas2.toDatalessJSON());
-        undoStack.push(json);
-        redoStack2 = []; // Clear redo stack
-    }
-
-    function undo() {
-        if (undoStack.length > 0) {
-            var json = undoStack.pop();
-            redoStack.push(json);
-            canvas.loadFromJSON(JSON.parse(json), function() {
-                canvas.renderAll();
-            });
-        }
-    }
-
-    function redo() {
-        if (redoStack.length > 0) {
-            var json = redoStack.pop();
-            undoStack.push(json);
-            canvas.loadFromJSON(JSON.parse(json), function() {
-                canvas.renderAll();
-            });
-        }
-    }
-    function undo2() {
-        if (undoStack.length > 0) {
-            var json = undoStack.pop();
-            redoStack2.push(json);
-            canvas2.loadFromJSON(JSON.parse(json), function() {
-                canvas2.renderAll();
-            });
-        }
-    }
-
-    function redo2() {
-        if (redoStack.length > 0) {
-            var json = redoStack.pop();
-            undoStack2.push(json);
-            canvas2.loadFromJSON(JSON.parse(json), function() {
-                canvas2.renderAll();
-            });
-        }
-    }
-
-    function clearCanvas() {
-        canvas.clear();
-        undoStack = [];
-        redoStack = [];
-        loadFixedImage();
-    }
-    function clearCanvas2() {
-        canvas2.clear();
-        undoStack2 = [];
-        redoStack2 = [];
-        loadFixedImage2();
-    }
-
-    // Event listeners for canvas buttons
-    $('#undoButton').click(undo);
-    $('#redoButton').click(redo);
-    $('#clear').click(clearCanvas);
-
-    // Event listeners for canvas buttons
-    $('#undoButton2').click(undo2);
-    $('#redoButton2').click(redo2);
-    $('#clear2').click(clearCanvas2);
-
-    // // Event listener for form submission
-    // $('#submit').click(function() {
-    //     // Serialize form data
-    //     var formData = $('#form').serialize();
-
-    //     // Get canvas data as base64 encoded image
-    //     var canvasData = canvas.toDataURL({ format: 'png', multiplier: 1 });
-
-    //     // Add canvas data to formData
-    //     formData += '&canvasImage=' + encodeURIComponent(canvasData);
-
-    //     // Send AJAX request
-    //     $.ajax({
-    //         type: 'POST',
-    //         url: 'php/test_process.php',
-    //         data: formData,
-    //         success: function(response) {
-    //             // Handle success response
-    //             Swal.fire({
-    //                 icon: 'success',
-    //                 title: 'Form Submitted Successfully',
-    //                 text: 'Your form and canvas data have been submitted successfully.',
-    //                 showConfirmButton: false,
-    //                 timer: 1500
-    //             });
-                
-    //             // Example: You can redirect or perform any action after successful submission
-    //             // window.location.href = 'success_page.php'; // Redirect example
-    //         },
-    //         error: function(xhr, status, error) {
-    //             // Handle error response
-    //             Swal.fire({
-    //                 icon: 'error',
-    //                 title: 'Form Submission Failed',
-    //                 text: 'There was an error submitting your form. Please try again later.'
-    //             });
-    //         }
-    //     });
-    // });
-});
-</script>
+    </script>
 
 <script>
     $(document).ready(function() {
@@ -1919,17 +1854,14 @@ $(document).ready(function() {
             url: 'php/test_process.php',
             data: formData,
             success: function(response) {
+
+                console.log("insrted", formData);
                 // Handle success response
                 Swal.fire({
                     icon: 'success',
                     title: 'Form Submitted Successfully',
                     text: 'Your form has been submitted successfully.',
-                    showConfirmButton: false,
-                    timer: 1500
                 });
-                
-                // Example: You can redirect or perform any action after successful submission
-                // window.location.href = 'success_page.php'; // Redirect example
             },
             error: function(xhr, status, error) {
                 // Handle error response
