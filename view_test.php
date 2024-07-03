@@ -217,6 +217,45 @@ if (isset($_GET['id'])) {
                                     </div>
                                 </div>
                             </div>
+                            <div class="flex mb-2">
+    <div class="w-1/2">
+        <p class="mt-4">Type</p>
+    </div>
+    <div class="w-1/2">
+        <div class="flex">
+            <div class="w-1/3">
+                <label for="type_scl" class="text-gray-700">SCL:</label>
+            </div>
+            <div class="w-2/3">
+                <p class="text-gray-900 sm:text-sm">
+                <?= $testData['type_scl'] == 1 ? 'Yes' : 'No'; ?>
+                </p>
+            </div>
+        </div>
+
+        <div class="flex">
+            <div class="w-1/3">
+                <label for="type_gp" class="text-gray-700">GP:</label>
+            </div>
+            <div class="w-2/3">
+                <p class="text-gray-900 sm:text-sm">
+                <?= $testData['type_gp'] == 1 ? 'Yes' : 'No'; ?>
+                </p>
+            </div>
+        </div>
+        <div class="flex">
+            <div class="w-1/3">
+                <label for="type_toric" class="text-gray-700">Toric:</label>
+            </div>
+            <div class="w-2/3">
+                <p class="text-gray-900 sm:text-sm">
+                <?= $testData['type_toric'] == 1 ? 'Yes' : 'No'; ?>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
                         </div>
                     </div>
                 </div>
@@ -496,7 +535,7 @@ if (isset($_GET['id'])) {
                                 <p for="glasses_od" class="text-gray-700">Eyes not aligned:</p>
                             </div>
                             <div class="w-full">
-                                <p class="text-gray-900 sm:text-sm"><?= htmlspecialchars($testData['eyes_not_aligned']) ?></p>
+                                <p class="text-gray-900 sm:text-sm"><?= $testData['eyes_not_aligned'] == 1 ? 'Yes' : 'No'; ?></p>
                             </div>
                         </div>
                         <div class="">
@@ -504,7 +543,7 @@ if (isset($_GET['id'])) {
                                 <p for="glasses_od" class="text-gray-700">Abnormal Head Posture:</p>
                             </div>
                             <div class="w-full">
-                                <p class="text-gray-900 sm:text-sm"><?= htmlspecialchars($testData['abnormal_head_posture']) ?></p>
+                            <p class="text-gray-900 sm:text-sm"><?= $testData['abnormal_head_posture'] == 1 ? 'Yes' : 'No'; ?></p>
                             </div>
                         </div>
                         <div class="">
@@ -512,7 +551,7 @@ if (isset($_GET['id'])) {
                                 <p for="glasses_od" class="text-gray-700">Face Tilt Direction</p>
                             </div>
                             <div class="w-full">
-                                <p class="text-gray-900 sm:text-sm"><?= htmlspecialchars($testData['face_tilt_direction']) ?></p>
+                                <p class="text-gray-900 sm:text-sm"><?= $testData['face_tilt_direction'] == 1 ? 'Yes' : 'No'; ?></p>
                             </div>
                         </div>
                         <div class="">
@@ -520,7 +559,7 @@ if (isset($_GET['id'])) {
                                 <p for="glasses_od" class="text-gray-700">Head Tilt Direction</p>
                             </div>
                             <div class="w-full">
-                                <p class="text-gray-900 sm:text-sm"><?= htmlspecialchars($testData['head_tilt_direction']) ?></p>
+                                <p class="text-gray-900 sm:text-sm"><?= $testData['head_tilt_direction'] == 1 ? 'Yes' : 'No'; ?></p>
                             </div>
                         </div>
                         <div class="">

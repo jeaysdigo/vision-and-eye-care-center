@@ -1,5 +1,4 @@
 <?php
-// Include database connection file
 require_once 'connect.php';
 
 // Function to sanitize user input
