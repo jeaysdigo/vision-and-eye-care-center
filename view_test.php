@@ -142,7 +142,7 @@ if (isset($_GET['id'])) {
                                     <label for="bp" class="text-gray-700">Blood Pressure:</label>
                                 </div>
                                 <div class="w-1/2">
-                                    <p class="text-gray-900 sm:text-sm">120/80</p>
+                                    <p class="text-gray-900 sm:text-sm"><?= htmlspecialchars($testData['bp_sys']) . "/" . htmlspecialchars($testData['bp_dia']) ?></p>
                                 </div>
                             </div>
 
@@ -170,7 +170,7 @@ if (isset($_GET['id'])) {
 
                             <div class="flex mb-2">
                                 <div class="w-1/2">
-                                    <p class="sm:mt-0">Glasses</p>
+                                    <p class="sm:mt-0">Glasses (sph/cyl/add)</p>
                                 </div>
                                 <div class="w-1/2">
                                     <div class="flex">

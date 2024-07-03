@@ -1,7 +1,7 @@
 <?php
 // Include the connect.php file
 require_once 'php/connect.php';
-
+date_default_timezone_set("Asia/Manila");
 // Start the session
 session_start();
 if (!isset($_SESSION['doctorId'])) { 
@@ -13,7 +13,8 @@ $patientId = isset($_GET['id']) ? $_GET['id'] : 999999999;
 $walkin = isset($_GET['id']) ? 0 : 1;
 
 
-// Initialize variables
+// Initialize variables 
+// init step 1
 $firstName = '';
 $lastName = '';
 $dateOfBirth = '';
@@ -25,55 +26,81 @@ $address = '';
 $municipality = '';
 $city = '';
 $zipCode = '';
+$case_no = '';
+$co_no = '';
+$bp_sys = '';
+$bp_dia = '';
+$resp_rate = '';
+$pulse_rate = '';
+$glasses_od_sph = '';
+$glasses_od_cyl = '';
+$glasses_od_add = '';
+$glasses_os_sph = '';
+$glasses_os_cyl = '';
+$glasses_os_add = '';
+$contact_lens_od = '';
+$contact_lens_os = '';
+$type_scl = '';
+$type_gp = '';
+$type_toric = '';
+
+// init step 2
+$visual_ocular = '';
+$medical_history_present = '';
+$medical_history_past = '';
+$family_history = '';
+$family_history_ocular = '';
+$family_history_medical = '';
 
 // init step 3
-$visualAcuityUnaidedDistanceOd = '';
-$visualAcuityUnaidedDistanceOs = '';
-$visualAcuityUnaidedDistanceOu = '';
-$visualAcuityUnaidedNearOd = '';
-$visualAcuityUnaidedNearOs = '';
-$visualAcuityUnaidedNearOu = '';
-$visualAcuityPinholeOd = '';
-$visualAcuityPinholeOs = '';
-$visualAcuityFarOd = '';
-$visualAcuityFarOs = '';
-$visualAcuityFarOu = '';
-$visualAcuityNearOd = '';
-$visualAcuityNearOs = '';
-$visualAcuityNearOu = '';
-$pupilShapeOd = '';
-$pupilShapeOs = '';
-$pupilDiameterOd = '';
-$pupilDiameterOs = '';
+$visual_acuity_unaided_distance_od = '';
+$visual_acuity_unaided_distance_os = '';
+$visual_acuity_unaided_distance_ou = '';
+$visual_acuity_unaided_near_od = '';
+$visual_acuity_unaided_near_os = '';
+$visual_acuity_unaided_near_ou = '';
+$visual_acuity_pinhole_od = '';
+$visual_acuity_pinhole_os = '';
+$visual_acuity_far_od = '';
+$visual_acuity_far_os = '';
+$visual_acuity_far_ou = '';
+$visual_acuity_near_od = '';
+$visual_acuity_near_os = '';
+$visual_acuity_near_ou = '';
+$pupil_shape_od = '';
+$pupil_shape_os = '';
+$pupil_diameter_od = '';
+$pupil_diameter_os = '';
 $pd = '';
 $de = '';
-$eyesNotAligned = '';
-$abnormalHeadPosture = '';
-$faceTiltDirection = '';
-$headTiltDirection = '';
-$otherPertinentObservations = '';
-$motorSensoryPushUpAmp = '';
-$motorSensoryNpc = '';
-$motorSensoryCornealReflexOd = '';
-$motorSensoryCornealReflexOs = '';
-$motorSensoryAlternateCoverTestFarSc = '';
-$motorSensoryAlternateCoverTestFarCc = '';
-$motorSensoryAlternateCoverTestNearSc = '';
-$motorSensoryAlternateCoverTestNearCc = '';
-$motorSensoryMotilityTestSmoothPursuit = '';
-$motorSensoryMotilityTestSaccadic = '';
-$motorSensoryPupillaryReflexDlrOd = '';
-$motorSensoryPupillaryReflexDlrOs = '';
-$motorSensoryPupillaryReflexIndirectOd = '';
-$motorSensoryPupillaryReflexIndirectOs = '';
-$motorSensoryPupillaryReflexAccommodationOd = '';
-$motorSensoryPupillaryReflexAccommodationOs = '';
-$motorSensoryPupillaryReflexSwingingFlashlightOd = '';
-$motorSensoryPupillaryReflexSwingingFlashlightOs = '';
-$motorSensoryAmslerTestOd = '';
-$motorSensoryAmslerTestOs = '';
-$motorSensoryProjTestOd = '';
-$motorSensoryProjTestOs = '';
+$eyes_not_aligned = '';
+$abnormal_head_posture = '';
+$face_tilt_direction = '';
+$head_tilt_direction = '';
+$other_pertinent_observations = '';
+$motor_sensory_push_up_amp = '';
+$motor_sensory_npc = '';
+$motor_sensory_corneal_reflex_od = '';
+$motor_sensory_corneal_reflex_os = '';
+$motor_sensory_alternate_cover_test_far_sc = '';
+$motor_sensory_alternate_cover_test_far_cc = '';
+$motor_sensory_alternate_cover_test_near_sc = '';
+$motor_sensory_alternate_cover_test_near_cc = '';
+$motor_sensory_motility_test_smooth_pursuit = '';
+$motor_sensory_motility_test_saccadic = '';
+$motor_sensory_pupillary_reflex_dlr_od = '';
+$motor_sensory_pupillary_reflex_dlr_os = '';
+$motor_sensory_pupillary_reflex_indirect_od = '';
+$motor_sensory_pupillary_reflex_indirect_os = '';
+$motor_sensory_pupillary_reflex_accommodation_od = '';
+$motor_sensory_pupillary_reflex_accommodation_os = '';
+$motor_sensory_pupillary_reflex_swinging_flashlight_od = '';
+$motor_sensory_pupillary_reflex_swinging_flashlight_os = '';
+$motor_sensory_amsler_test_od = '';
+$motor_sensory_amsler_test_os = '';
+$motor_sensory_proj_test_od = '';
+$motor_sensory_proj_test_os = '';
+
 
 
 
@@ -111,6 +138,43 @@ if (isset($_GET['id'])) {
         echo "Error: " . $conn->error;
     }
 }
+if (isset($_GET['testId'])) { 
+    $testId = $_GET['testId'];
+    $sql = "SELECT * FROM test WHERE testID = ?";
+    if ($stmt = $conn->prepare($sql)) {
+        $stmt->bind_param('i', $testId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($row = $result->fetch_assoc()) {
+            // List of columns you want to fetch
+            $columns = [
+                'FirstName', 'LastName', 'DateOfBirth', 'Gender', 'ContactNumber', 'Occupation', 'Email',
+                'Address', 'Municipality', 'City', 'ZipCode',
+                'case_no', 'co_no', 'bp_sys', 'bp_dia', 'resp_rate', 'pulse_rate',
+                'glasses_od_sph', 'glasses_od_cyl', 'glasses_od_add', 'glasses_os_sph', 'glasses_os_cyl', 'glasses_os_add',
+                'contact_lens_od', 'contact_lens_os', 'type_scl', 'type_gp', 'type_toric',
+                'visual_ocular', 'medical_history_present', 'medical_history_past',
+                'family_history', 'family_history_ocular', 'family_history_medical'
+            ];
+
+            // Dynamically assign variables
+            foreach ($columns as $column) {
+                if (isset($row[$column])) {
+                    ${lcfirst($column)} = $row[$column];
+                } else {
+                    ${lcfirst($column)} = '';
+                }
+            }
+        } else {
+            header('location: error.php');
+        }
+        $stmt->close();
+    } else {
+        echo "Error: " . $conn->error;
+    }
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -137,15 +201,7 @@ if (isset($_GET['id'])) {
     }
   </style>
 </head>
-<body>
-<script>
-    $(document).ready(function() {
-      window.addEventListener('beforeunload', function(event) {
-        event.preventDefault();
-        event.returnValue = ''; // Modern browsers require this for the prompt to show
-      });
-    });
-  </script>
+<body class="bg-gray-50">
 
 <nav class="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
   <div class="px-3 py-3 lg:px-5 lg:pl-3">
@@ -159,38 +215,42 @@ if (isset($_GET['id'])) {
             <div class="text-center p-2 flex font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">Comprehensive Eye Examination</div>
             <div class="w-10 h-10"></div> 
       </div>
+      <div class="flex sm:justify-start justify-center">
+        <div class="step-count text-left sm:text-base text-sm">
+             <span id="current-step">1</span>/<span id="total-steps">5</span>
+        </div>
+    </div>
     </div>
   </div>
 </nav>
 
 
-<section class="mb-8 pb-8 max-w-4xl mx-auto mt-8 pt-8">
+<section class="mb-8 pb-8 max-w-4xl mx-auto mt-8 pt-8 bg-white border">
   <div class="mx-auto max-w-md flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
 
     <form id="form" action="php/test_process.php" method="post">
     <div class="text-gray-900 bg-blue-50 rounded-md p-4 dark:text-white mt-0 flex flex-col items-start space-y-0">
-        <button type="button" class="step-button text-blue-800 text-sm hover:underline md:me-6" onclick="goToStep(0)">1. Patient’s Profile</button>
-        <button type="button" class="step-button text-blue-800 text-sm hover:underline md:me-6" onclick="goToStep(1)">2. Patient’s History</button>
+        <button type="button" class="step-button text-blue-800 text-sm hover:underline md:me-6" onclick="goToStep(0)">1. Patient's Profile</button>
+        <button type="button" class="step-button text-blue-800 text-sm hover:underline md:me-6" onclick="goToStep(1)">2. Patient's History</button>
         <button type="button" class="step-button text-blue-800 text-sm hover:underline md:me-6" onclick="goToStep(2)">3. Prelim Exam & General Observation</button>
         <button type="button" class="step-button text-blue-800 text-sm hover:underline md:me-6" onclick="goToStep(3)">4. Objective Refraction</button>
         <button type="button" class="step-button text-blue-800 text-sm hover:underline md:me-6" onclick="goToStep(4)">5. Subjective Refraction</button>
         <button type="button" class="step-button text-blue-800 text-sm hover:underline md:me-6" onclick="goToStep(5)">6. Photometric Test</button>
-        <button type="button" class="step-button text-blue-800 text-sm hover:underline md:me-6" onclick="goToStep(6)">7. SUpplemental Test</button>
+        <button type="button" class="step-button text-blue-800 text-sm hover:underline md:me-6" onclick="goToStep(6)">7. Supplemental Test</button>
         <button type="button" class="step-button text-blue-800 text-sm hover:underline md:me-6" onclick="goToStep(7)">8. Trial Framing</button>
         <button type="button" class="step-button text-blue-800 text-sm hover:underline md:me-6" onclick="goToStep(8)">9. Biomicroscopy</button>
         <button type="button" class="step-button text-blue-800 text-sm hover:underline md:me-6" onclick="goToStep(9)">10. Intra-ocular Pressure</button>
         <button type="button" class="step-button text-blue-800 text-sm hover:underline md:me-6" onclick="goToStep(10)">11. Posterior Segment Exam</button>
         <button type="button" class="step-button text-blue-800 text-sm hover:underline md:me-6" onclick="goToStep(11)">12. Assessment & Evaluation</button>
     </div>
-    <div class="step-count">
-        Step <span id="current-step">1</span> of <span id="total-steps">5</span>
-      </div>
+ 
       <!-- Step 1 -->
-      <div class="step active">
+    <div class="step active">
         <input type="text" id="PatientID" name="PatientID" class="hidden" required value="<?php echo $patientId; ?>">
         <input type="text" id="DoctorID" name="DoctorID" class="hidden" required value="<?php echo $doctorId; ?>">
         <input type="text" id="walkIn" name="walkIn" class="hidden" required value="<?php echo $walkin; ?>">
 
+        <p class="font-medium my-4">I. Patient's Profile</p>
         <label for="FirstName">First Name:  <span class="text-red-600 text-sm">* </span> </label>
         <input type="text" id="FirstName" name="FirstName" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5" value="<?php echo $firstName; ?>"><br><br>
 
@@ -198,6 +258,7 @@ if (isset($_GET['id'])) {
         <input type="text" id="LastName" name="LastName" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5" value="<?php echo $lastName; ?>"><br><br>
 
         <label for="DateOfBirth">Patient's Birthday:</label>
+        <?php $dateOfBirth = isset($dateOfBirth) && !empty($dateOfBirth) ? $dateOfBirth : date('Y-m-d'); ?>
         <input type="date" id="DateOfBirth" name="DateOfBirth" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5" value="<?php echo $dateOfBirth; ?>"><br><br>
 
         <label for="Gender">Gender:</label>
@@ -230,25 +291,25 @@ if (isset($_GET['id'])) {
 
         <div class="mb-4">
             <label for="case_no">Case Number: <span class="text-red-600 text-sm">* </span></label>
-            <input type="text" id="case_no" name="case_no" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5" required>
+            <input value="<?php echo $case_no?>" type="text" id="case_no" name="case_no" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5" required>
             <p class="text-sm text-red-600 dark:text-red-500" id="case_no-error"></p>
         </div>
 
         <label for="co_no">CO Number:  <span class="text-red-600 text-sm">* </span></label>
-        <input type="text" id="co_no" name="co_no" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5"><br><br>
+        <input value="<?php echo $co_no?>" type="text" id="co_no" name="co_no" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5"><br><br>
 
         <label for="bp">Blood Pressure:</label>
         <div class="flex p-2">
-            <input type="text" id="bp_sys" name="bp_sys" placeholder="SYS"class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5">
+            <input value="<?php echo $bp_sys?>"  type="text" id="bp_sys" name="bp_sys" placeholder="SYS"class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5">
             <p class="w-4 m-2 text-gray-600"> / </p>
-            <input type="text" id="bp_dia" name="bp_dia" placeholder="DIA" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5"><br><br>
+            <input value="<?php echo $bp_dia?>" type="text" id="bp_dia" name="bp_dia" placeholder="DIA" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5"><br><br>
         </div>
 
         <label for="resp_rate">Respiratory Rate:</label>
-        <input type="text" id="resp_rate" name="resp_rate" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5"><br><br>
+        <input  value="<?php echo $resp_rate?>" type="text" id="resp_rate" name="resp_rate" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5"><br><br>
 
         <label for="pulse_rate">Pulse Rate:</label>
-        <input type="text" id="pulse_rate" name="pulse_rate" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5"><br><br>
+        <input  value="<?php echo $pulse_rate?>" type="text" id="pulse_rate" name="pulse_rate" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5"><br><br>
 
         Glasses
         <div class="flex space-x-4 mb-2">
@@ -256,13 +317,13 @@ if (isset($_GET['id'])) {
                 <p for="glasses_od">OD:</p>
             </div>
             <div class="w-1/4">
-                <input type="text" id="glasses_od" name="glasses_od_sph" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5" placeholder="Sph">
+                <input value="<?php echo $glasses_od_sph?>" type="text" id="glasses_od" name="glasses_od_sph" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5" placeholder="Sph">
             </div>
             <div class="w-1/4">
-                <input type="text" id="glasses_od" name="glasses_od_cyl" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5" placeholder="Cyl">
+                <input value="<?php echo $glasses_od_cyl?>"type="text" id="glasses_od" name="glasses_od_cyl" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5" placeholder="Cyl">
             </div>
             <div class="w-1/4">
-                <input type="text" id="glasses_od" name="glasses_od_add" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5" placeholder="Add">
+                <input value="<?php echo $glasses_od_add?>" type="text" id="glasses_od" name="glasses_od_add" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5" placeholder="Add">
             </div>
         </div>
         
@@ -271,13 +332,13 @@ if (isset($_GET['id'])) {
                 <p for="glasses_os">OS:</p>
             </div>
             <div class="w-1/4">
-                <input type="text" id="glasses_os_sph" name="glasses_os_sph" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5" placeholder="Sph">
+                <input value="<?php echo $glasses_os_sph?>" type="text" id="glasses_os_sph" name="glasses_os_sph" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5" placeholder="Sph">
             </div>
             <div class="w-1/4">
-                <input type="text" id="glasses_os_cyl" name="glasses_os_cyl" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5" placeholder="Cyl">
+                <input value="<?php echo $glasses_os_cyl?> "type="text" id="glasses_os_cyl" name="glasses_os_cyl" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5" placeholder="Cyl">
             </div>
             <div class="w-1/4">
-                <input type="text" id="glasses_os_add" name="glasses_os_add" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5" placeholder="Add">
+                <input value="<?php echo $glasses_os_add?>" type="text" id="glasses_os_add" name="glasses_os_add" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5" placeholder="Add">
             </div>
         </div>
 
@@ -286,14 +347,14 @@ if (isset($_GET['id'])) {
             <div class="w-1/4">
                 <label for="contact_lens_od">OD:</label> </div>
             <div class="w-full">
-                <input type="text" id="contact_lens_od" name="contact_lens_od" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5"><br><br>
+                <input value="<?php echo $contact_lens_od?>" type="text" id="contact_lens_od" name="contact_lens_od" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5"><br><br>
             </div>
         </div>
         <div class="flex space-x-4">
             <div class="w-1/4">
                 <label for="contact_lens_od">OS:</label> </div>
             <div class="w-full">
-                <input type="text" id="contact_lens_os" name="contact_lens_os" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5"><br><br>
+                <input value="<?php echo $contact_lens_os?>" type="text" id="contact_lens_os" name="contact_lens_os" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5"><br><br>
             </div>
         </div>
 
@@ -304,7 +365,7 @@ if (isset($_GET['id'])) {
             </div>
 
             <div class="flex items-center">
-                <input type="checkbox" id="type_gp" name="type_gp" value="1" class="h-5 w-5 text-blue-600 rounded border-blue-300 focus:ring-indigo-500">
+                <input value="<?php echo $type_gp?>" type="checkbox" id="type_gp" name="type_gp" value="1" class="h-5 w-5 text-blue-600 rounded border-blue-300 focus:ring-indigo-500">
                 <label for="type_gp" class="ml-2 text-sm text-gray-700">Type GP</label>
             </div>
 
@@ -316,27 +377,26 @@ if (isset($_GET['id'])) {
 
 
         <button type="button" class="stepper-button w-full h-12 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2" onclick="nextStep()">Next</button>
-      </div>
+    </div>
+    
+    <!-- step 2  -->
+    <div class="step">
+        <p class="font-medium my-4">II. Patient's History</p>
+        <label for="visual_ocular">Visual and Ocular:</label>
+        <textarea value="<?php echo $visualOcular?>" id="visual_ocular" name="visual_ocular" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5"></textarea><br><br>
 
-
-     <!-- step 2  -->
-     <div class="step">
-        <label for="visual_ocular">Visual Ocular:</label>
-        <textarea id="visual_ocular" name="visual_ocular" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5"></textarea><br><br>
-
-        <label for="medical_history_present">Present Medical History:</label>
+        <p class="font-medium mb-2">Medical</p>
+        <label for="medical_history_present">Present Illness:</label>
         <textarea id="medical_history_present" name="medical_history_present" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5"></textarea><br><br>
 
-        <label for="medical_history_past">Past Medical History:</label>
+        <label for="medical_history_past">Past History:</label>
         <textarea id="medical_history_past" name="medical_history_past" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5"></textarea><br><br>
 
-        <label for="family_history">Family History:</label>
-        <textarea id="family_history" name="family_history" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5"></textarea><br><br>
-
-        <label for="family_history_ocular">Family History Ocular:</label>
+        <p class="font-medium mb-2">Family History:</p>
+        <label for="family_history_ocular">Ocular:</label>
         <textarea id="family_history_ocular" name="family_history_ocular" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5"></textarea><br><br>
 
-        <label for="family_history_medical">Family History Medical:</label>
+        <label for="family_history_medical">Medical:</label>
         <textarea id="family_history_medical" name="family_history_medical" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5"></textarea><br><br>
 
         <div class="space-x-4">
@@ -349,7 +409,7 @@ if (isset($_GET['id'])) {
 
     <!-- Step 3 -->
     <div class="step">
-
+        <p class="font-medium my-4">III. Prelim Exam & General Observation</p>
         <p class="font-medium">Unaided Distance </p>
         <div class="flex space-x-4 mb-4">
             <div class="w-1/3">
@@ -632,11 +692,11 @@ if (isset($_GET['id'])) {
             </div>
     </div>
 
-      <!-- Step 4 -->
-      <div class="step">
-    <p class="font-medium mb-2">Objective Refraction</p>
+    <!-- Step 4 -->
+    <div class="step">
+        <p class="font-medium  my-4">IV. Objective Refraction</p>
 
-      Static Retinoscopy <br>
+        <p class="font-medium">Static Retinoscopy</p> <br>
       <div class="flex">
       <div class="">
             <label for="objective_refraction_static_retinoscopy_od">OD:</label>
@@ -677,7 +737,7 @@ if (isset($_GET['id'])) {
 
     <!-- Step 5 -->
     <div class="step">
-      <p class="font-medium mb-2">V. Subjective Refraction</p>
+      <p class="font-medium my-4">V. Subjective Refraction</p>
 
       Manifest
         <div class="flex space-x-4 mb-2">
@@ -753,10 +813,9 @@ if (isset($_GET['id'])) {
         </div> 
     </div>
     
-
     <!-- Step 6 -->
     <div class="step">
-        <p class="font-medium mb-2">VI. Phorometric and Vergence Tests</p>
+        <p class="font-medium  my-4">VI. Phorometric and Vergence Tests</p>
 
         <p class="font-medium mb-2">Lateral Phoria</p>
         <div class="flex space-x-4 mb-2">
@@ -924,7 +983,7 @@ if (isset($_GET['id'])) {
 
     <!-- Step 7 -->
     <div class="step">
-        <p class="font-medium mb-2">VII. Additional Visual Tests</p>
+        <p class="font-medium  my-4">VII. Additional Visual Tests</p>
 
         <p class="font-medium mb-2">Prism Cover Test</p>
         <div class="w-full mb-4">
@@ -1006,7 +1065,7 @@ if (isset($_GET['id'])) {
 
     <!-- Step 8 -->
     <div class="step">
-        <p class="font-medium mb-2">VIII. Trial Framing</p>
+        <p class="font-medium  my-4">VIII. Trial Framing</p>
         <p class="font-medium">Distance</p> 
         <div class="flex space-x-4 mb-2">
             <div class="w-1/2">
@@ -1063,7 +1122,7 @@ if (isset($_GET['id'])) {
 
     <!-- Step 9 -->
     <div class="step">
-        <p class="font-medium mb-2">IX. Biomicroscopy</p>
+        <p class="font-medium  my-4">IX. Biomicroscopy</p>
 
         <div class="flex space-x-4 mb-2">
             <div class="w-2/4">
@@ -1080,7 +1139,7 @@ if (isset($_GET['id'])) {
         </div>
 
         <div class="flex space-x-4 mb-2">
-            <div class="w-1/3">
+            <div class="w-2/4">
                 <p class="text-sm">Eyelashes:</p>
             </div>
             <div class="w-1/3">
@@ -1094,7 +1153,7 @@ if (isset($_GET['id'])) {
         </div>
 
         <div class="flex space-x-4 mb-2">
-            <div class="w-1/3">
+            <div class="w-2/4">
                 <p>Lid Margin:</p>
             </div>
             <div class="w-1/3">
@@ -1108,7 +1167,7 @@ if (isset($_GET['id'])) {
         </div>
 
         <div class="flex space-x-4 mb-2">
-            <div class="w-1/3">
+            <div class="w-2/4">
                 <p>Ducts:</p>
             </div>
             <div class="w-1/3">
@@ -1122,7 +1181,7 @@ if (isset($_GET['id'])) {
         </div>
 
         <div class="flex space-x-4 mb-2">
-            <div class="w-1/3">
+            <div class="w-2/4">
                 <p>Conjunctiva:</p>
             </div>
             <div class="w-1/3">
@@ -1136,7 +1195,7 @@ if (isset($_GET['id'])) {
         </div>
 
         <div class="flex space-x-4 mb-2">
-            <div class="w-1/3">
+            <div class="w-2/4">
                 <p>Sclera:</p>
             </div>
             <div class="w-1/3">
@@ -1150,7 +1209,7 @@ if (isset($_GET['id'])) {
         </div>
 
         <div class="flex space-x-4 mb-2">
-            <div class="w-1/3">
+            <div class="w-2/4">
                 <p>Pupil:</p>
             </div>
             <div class="w-1/3">
@@ -1164,7 +1223,7 @@ if (isset($_GET['id'])) {
         </div>
 
         <div class="flex space-x-4 mb-2">
-            <div class="w-1/3">
+            <div class="w-2/4">
                 <p>Iris:</p>
             </div>
             <div class="w-1/3">
@@ -1178,7 +1237,7 @@ if (isset($_GET['id'])) {
         </div>
 
         <div class="flex space-x-4 mb-2">
-            <div class="w-1/3">
+            <div class="w-2/4">
                 <p>Lens:</p>
             </div>
             <div class="w-1/3">
@@ -1191,43 +1250,31 @@ if (isset($_GET['id'])) {
             </div>
         </div>
 
-        <div class="w-full mb-2">
+        <!-- <div class="w-full mb-2">
             <label for="biomicroscopy_other_tests">Other Tests:</label>
             <input type="text" id="biomicroscopy_other_tests" name="biomicroscopy_other_tests" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5">
-        </div>
-
+        </div> -->
+        <p>Von Herrick:</p>
         <div class="flex space-x-4 mb-2">
-            <div class="w-1/3">
-                <p>Von Herrick:</p>
-            </div>
-            <div class="w-2/3">
+            <div class="w-full">
                 <input type="text" id="biomicroscopy_von_herrick" name="biomicroscopy_von_herrick" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5">
             </div>
         </div>
-
+        <p>TBUT:</p>
         <div class="flex space-x-4 mb-2">
-            <div class="w-1/3">
-                <p>TBUT:</p>
-            </div>
-            <div class="w-2/3">
+            <div class="w-full">
                 <input type="text" id="biomicroscopy_tbut" name="biomicroscopy_tbut" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5">
             </div>
         </div>
-
+        <p>Schirmer's Test:</p>
         <div class="flex space-x-4 mb-2">
-            <div class="w-1/3">
-                <p>Schirmer's Test:</p>
-            </div>
-            <div class="w-2/3">
+            <div class="w-full">
                 <input type="text" id="biomicroscopy_schirmers_test" name="biomicroscopy_schirmers_test" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5">
             </div>
         </div>
-
+        <p>Tear Meniscus:</p>
         <div class="flex space-x-4 mb-2">
-            <div class="w-1/3">
-                <p>Tear Meniscus:</p>
-            </div>
-            <div class="w-2/3">
+            <div class="w-full">
                 <input type="text" id="biomicroscopy_tear_meniscus" name="biomicroscopy_tear_meniscus" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5">
             </div>
         </div>
@@ -1244,26 +1291,18 @@ if (isset($_GET['id'])) {
       <!-- <script src="https://cdn.jsdelivr.net/npm/fabric"></script> -->
     
     </div>
-    
 
-    
-
-
- 
-
- 
-
-        <div class="space-x-4">
+      <div class="space-x-4">
             <div class="flex items-center">
                 <button type="button" class="w-1/2 stepper-button h-12 text-blue-700 bg-blue-100 hover:bg-blue-300 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2" onclick="prevStep()">Previous</button>
                 <button type="button" class="w-1/2 stepper-button h-12 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2" onclick="nextStep()">Next</button>
             </div>
         </div>
     </div>
-
-    <!-- Step 10 -->
-<div class="step">
-    <p class="font-medium mb-2">Intra Ocular Pressure</p>
+    
+   <!-- Step 10 -->
+   <div class="step">
+    <p class="font-medium my-4">X. Intra Ocular Pressure</p>
 
     Tactile
     <div class="flex space-x-4 mb-2">
@@ -1566,7 +1605,11 @@ if (isset($_GET['id'])) {
 
         <div class="space-x-4">
             <a id="submit" class="inline-flex items-center justify-center w-1/2 px-3 py-2 text-sm font-medium text-center text-white rounded-lg focus:ring-4 focus:ring-blue-300 sm:w-auto dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 cursor-not-allowed" disabled>
-                Submit
+            <svg aria-hidden="true" role="status" class="spinner-icon inline w-4 h-4 me-3 text-white animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="#E5E7EB"/>
+                                <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentColor"/>
+                            </svg>
+                            Submit
             </a>
         </div>
         <div class="p-4 mb-4 text-sm text-gray-600 rounded-lg dark:bg-gray-800 dark:text-blue-400" role="alert">
@@ -1617,78 +1660,7 @@ if (isset($_GET['id'])) {
     showStep(currentStep);
 </script>
 
-</script>
-
 <script>
-$(document).ready(function() {
-
-    // function checkFields() {
-    //     var caseNo = $('#case_no').val().trim();
-    //     var coNo = $('#co_no').val().trim();
-    //     var firstName = $('#FirstName').val().trim();
-    //     var lastName = $('#LastName').val().trim();
-
-    //     if (caseNo && coNo && firstName && lastName) {
-    //         $('#submit').prop('disabled', false);
-    //     } else {
-    //         $('#submit').prop('disabled', true);
-    //     }
-    // }
-
-    // // Check fields initially in case they are pre-filled
-    // checkFields();
-
-    // // Add event listeners to input fields
-    // $('#case_no, #co_no, #FirstName, #LastName').on('input', checkFields);
-
-    // $('#submit').click(function() { // Assuming #submit is the id of your submit button
-    //     // Serialize form data
-    //     var formData = $('#form').serialize();
-
-    //     var canvas = document.getElementById('drawingCanvas');
-    //     var canvas2 = document.getElementById('drawingCanvas2');
-    //     var canvasData = canvas.toDataURL('image/png'); // Defaults to PNG format
-    //     var canvasData2 = canvas2.toDataURL('image/png'); // Defaults to PNG format
-        
-    //     // Remove the "data:image/png;base64," prefix
-    //     var base64Image = canvasData.replace(/^data:image\/(png|jpeg|jpg);base64,/, "");
-    //     var base64Image2 = canvasData2.replace(/^data:image\/(png|jpeg|jpg);base64,/, "");
-
-    //     // Add canvas data to formData (as an additional parameter or separate AJAX call)
-    //     formData += '&biomicroscopy_image=' + encodeURIComponent(base64Image) + '&posterior_segment_exam=' + encodeURIComponent(base64Image2);
-
-    //     // Send AJAX request
-    //     $.ajax({
-    //         type: 'POST',
-    //         url: 'php/test_process.php',
-    //         data: formData,
-    //         success: function(response) {
-    //             // Handle success response
-    //             Swal.fire({
-    //                 icon: 'success',
-    //                 title: 'Form Submitted Successfully',
-    //                 text: 'Your form has been submitted successfully.',
-    //                 showConfirmButton: false,
-    //                 timer: 1500
-    //             });
-                
-    //             // Example: You can redirect or perform any action after successful submission
-    //             // window.location.href = 'success_page.php'; // Redirect example
-    //         },
-    //         error: function(xhr, status, error) {
-    //             // Handle error response
-    //             Swal.fire({
-    //                 icon: 'error',
-    //                 title: 'Form Submission Failed',
-    //                 text: 'There was an error submitting your form. Please try again later.'
-    //             });
-    //         }
-    //     });
-    // });
-});
-</script>
-
- <script>
         $(document).ready(function() {
             var canvas = new fabric.Canvas('drawingCanvas', {
                 isDrawingMode: true,
@@ -1769,8 +1741,10 @@ $(document).ready(function() {
         });
     </script>
 
+
 <script>
     $(document).ready(function() {
+        $('.spinner-icon').hide();
     function checkFields() {
         var caseNo = $('#case_no').val().trim();
         var coNo = $('#co_no').val().trim();
@@ -1840,7 +1814,7 @@ $(document).ready(function() {
         var canvas2 = document.getElementById('drawingCanvas2');
         var canvasData = canvas.toDataURL('image/png'); // Defaults to PNG format
         var canvasData2 = canvas2.toDataURL('image/png'); // Defaults to PNG format
-        
+
         // Remove the "data:image/png;base64," prefix
         var base64Image = canvasData.replace(/^data:image\/(png|jpeg|jpg);base64,/, "");
         var base64Image2 = canvasData2.replace(/^data:image\/(png|jpeg|jpg);base64,/, "");
@@ -1854,13 +1828,14 @@ $(document).ready(function() {
             url: 'php/test_process.php',
             data: formData,
             success: function(response) {
-
-                console.log("insrted", formData);
-                // Handle success response
+                $('.spinner-icon').show();
                 Swal.fire({
                     icon: 'success',
                     title: 'Form Submitted Successfully',
                     text: 'Your form has been submitted successfully.',
+                }).then(function() {
+                    $('.spinner-icon').hide();
+                    window.history.back();
                 });
             },
             error: function(xhr, status, error) {
