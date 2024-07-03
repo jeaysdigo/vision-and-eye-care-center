@@ -140,7 +140,7 @@ $sql = "SELECT patients.PatientID, doctors.FirstName, doctors.LastName, services
                     </a>';
                 }
             } else {
-                echo "No services found.";
+                echo "<p class='text-center flex flex-col w-full p-4 text-sm text-gray-500 dark:text-gray-400'>No approved appointment.</p>";
             }
             ?>
         </div>
