@@ -21,8 +21,13 @@ if (isset($_SESSION['patientId'])) {
   <title>Vision and Eye Care Center</title>
   <link href="https://cdn.jsdelivr.net/npm/flowbite@2.3.0/dist/flowbite.min.css" rel="stylesheet">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 </head>
 <body>
+<script>
+  AOS.init();
+</script>
 <style>
     /* Style for loading spinner */
     .loading-spinner {
@@ -48,7 +53,7 @@ if (isset($_SESSION['patientId'])) {
   <section>
     <div class="mt-6 mx-auto max-w-md flex flex-col items-center justify-center mx-auto md:h-screen lg:py-0">
         <div class="w-full mt-6 bg-white rounded-lg dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
-            <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+            <div class="p-6 space-y-4 md:space-y-6 sm:p-8"  data-aos="fade-up">
                 <h1 class="text-2xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">Login</h1>
                 <span class="text-sm font-light text-gray-500 dark:text-gray-400">Login to continue</span>
                 <form id="loginForm" class="space-y-4 md:space-y-6">
@@ -60,11 +65,11 @@ if (isset($_SESSION['patientId'])) {
                         <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
                         <input type="password" name="password" id="password" placeholder="••••••••" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required="">
                     </div>
-                    <div class="flex items-start">
+                    <!-- <div class="flex items-start">
                         <div class="text-sm">
                           <label for="forgot" class="font-light text-gray-500 dark:text-gray-300"><a class="font-medium text-primary-600 hover:underline dark:text-primary-500" href="forgot_password.php">Forgot Password?</a></label>
                         </div>
-                    </div>
+                    </div> -->
                     <p class="mt-2 text-sm text-red-600 hidden" id="error">Incorrect credentials. Please try again.</p>
                     <div class="flex items-center">
                         <button type="submit" id="loginButton" class="flex items-center justify-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-24 px-5 py-4 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">

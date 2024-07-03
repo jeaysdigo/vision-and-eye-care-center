@@ -53,6 +53,8 @@ $result4 = $conn->query($sql4);
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <link rel="stylesheet" href="css/style.css">
   <script src="js/script.js"></script>
   <body>
@@ -119,23 +121,26 @@ $result4 = $conn->query($sql4);
                         $appointmentDate = date("g:i A - F j, Y", strtotime($row["AppointmentDate"]));
                         echo '<li class="p-4 flex flex-col md:flex-row justify-between items-center bg-gray-25 hover:bg-gray-25 rounded-lg mb-4 shadow-sm transition">
                         <div class="flex items-center">
-                        <div class="bg-blue-100 rounded-full bg-gray-50 border rounded-full w-16 h-16 flex items-center justify-center mx-auto overflow-hidden">
-                        <img src="assets/profile.png" class="w-full object-cover" alt="Profile Icon">
-                      </div>
+                          <div class="bg-blue-100 rounded-full bg-gray-50 border rounded-full w-16 h-16 flex items-center justify-center mx-auto overflow-hidden">
+                            <img src="assets/profile.png" class="w-full object-cover" alt="Profile Icon">
+                          </div>
                           <div class="p-2 ml-2">
                             <p class="text-lg p-1 font-medium text-gray-900">'. $row["FirstName"] . ' ' . $row["LastName"] .'</p>
                             <p class="text-sm p-1 text-gray-500"><i class="bi bi-eye-fill text-gray-400"></i> '  . $row["ServiceName"] .  '</p>
-                            <p class="text-sm  p-1 text-gray-500"><i class="bi bi-calendar-fill text-gray-400"></i> ' . $appointmentDate . '</p>
-                            <p class="text-sm  p-1 text-gray-500"><i class="bi bi-sticky-fill text-gray-400"></i> ' . $row["Notes"] . '</p>
+                            <p class="text-sm p-1 text-gray-500"><i class="bi bi-calendar-fill text-gray-400"></i> ' . $appointmentDate . '</p>
+                            <p class="text-sm p-1 text-gray-500"><i class="bi bi-sticky-fill text-gray-400"></i> ' . $row["Notes"] . '</p>
                           </div>
                         </div>
-                        <button id="' . $approveButtonId . '" class="mt-4 md:mt-0 approveButton text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
-                          <i class="bi bi-x-lg"></i> Accept
-                        </button>
-                        <button id="' . $cancelButtonId . '" class="mt-4 md:mt-0 cancelButton text-blue-500 bg-blue-100 hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
-                          <i class="bi bi-x-lg"></i> Cancel
-                        </button>
+                        <div class="flex flex-col md:flex-row items-center">
+                          <button id="' . $approveButtonId . '" class="approveButton w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
+                            <i class="bi bi-x-lg"></i> Accept
+                          </button>
+                          <button id="' . $cancelButtonId . '" class="cancelButton  w-full  text-blue-500 bg-blue-100 hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
+                            <i class="bi bi-x-lg"></i> Cancel
+                          </button>
+                        </div>
                       </li>';
+                
                     }
                     
 

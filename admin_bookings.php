@@ -4,12 +4,10 @@ require_once 'php/connect.php';
 
 // Start the session
 session_start();
-
 if (!isset($_SESSION['doctorId'])) {
     header('Location: login.php');
     exit;
   }
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -18,7 +16,8 @@ if (!isset($_SESSION['doctorId'])) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vision and Eye Care Center</title>
   <link href="https://cdn.jsdelivr.net/npm/flowbite@2.3.0/dist/flowbite.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <!-- <link rel="stylesheet" href="css/styles.css"> -->
 </head>
 <body>
@@ -51,15 +50,10 @@ if (!isset($_SESSION['doctorId'])) {
   </div>
 </nav>
 
-
 <?php include_once 'php/aside_admin.php'; ?>
 
+
 <?php 
-// Fetch appointments for doctor page
-// $sql = "SELECT appointments.AppointmentID, appointments.AppointmentDate, appointments.Notes, appointments.Status,
-//         patients.FirstName, patients.LastName, patients.ContactNumber, patients.Email, patients.Address
-//         FROM appointments
-//         JOIN patients ON appointments.PatientID = patients.PatientID";
 
 $sql = "SELECT appointments.AppointmentID, appointments.AppointmentDate, appointments.Notes, appointments.Status,
         patients.FirstName, patients.LastName, patients.ContactNumber, patients.Email, patients.Address,
@@ -77,20 +71,17 @@ if ($result->num_rows > 0) {
     while($row = $result->fetch_assoc()) {
         $appointments[] = $row;
     }
-} else {
-    echo "No appointments found.";
-    exit;
 }
 
 $conn->close();
 ?>
 
 <div class="p-4 sm:ml-64">
-    <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm rounded-lg dark:border-gray-700 mt-14">
-        <div class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white mb-4">All bookings</div>
-        <div class="mb-4 flex items-center"></div>
+<div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm rounded-lg dark:border-gray-700 mt-14">
+<div class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white mb-4">Appointments</div>
 
-        <div class="mb-4 flex items-center">
+
+<div class="mb-4 flex items-center justify-between">
             <div class="relative mt-1 lg:w-64 xl:w-96">
                 <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                     <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -100,25 +91,25 @@ $conn->close();
                 <input type="text" name="search" id="search" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg pl-10 p-2  focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Search">
             </div>
         </div>
-        
-        <div class="relative overflow-x-auto sm:rounded-lg">
-            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                    <tr>
-                    <th scope="col" class="px-6 py-3">Appointment Date</th>
+
+
+
+<div class="relative overflow-x-auto sm:rounded-lg">
+    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+                        <th scope="col" class="px-6 py-3">Date</th>
                         <th scope="col" class="px-6 py-3">Patient</th>
-                        <!-- <th scope="col" class="px-6 py-3">Patient's Contact</th> -->
-                        <!-- <th scope="col" class="px-6 py-3">Email</th>
-                        <th scope="col" class="px-6 py-3">Address</th> -->
+                                
                         <th scope="col" class="px-6 py-3">Service</th>
                         <th scope="col" class="px-6 py-3">Doctor</th>
                         
                         <th scope="col" class="px-6 py-3">Notes</th>
                         <th scope="col" class="px-6 py-3">Status</th>
                         <th scope="col" class="px-6 py-3"></th>
-                    </tr>
-                </thead>
-                <tbody id="table">
+            </tr>
+        </thead>
+        <tbody id="table">
                     <?php if (!empty($appointments)): ?>
                         <?php foreach ($appointments as $appointment): ?>
                             <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
@@ -170,19 +161,21 @@ $conn->close();
                         </tr>
                     <?php endif; ?>
                 </tbody>
-            </table>
-            <div id="noRecordsMessage" class="hidden text-center text-gray-500 dark:text-gray-400">No records found.</div>
-        </div>
+    </table>
+    <div id="noRecordsMessage" class="hidden text-center text-gray-500 dark:text-gray-400">No records found.</div>
+
+</div>
+
     </div>
 </div>
 
 
 <!-- create service modal -->
-<!-- <div id="crud-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+<div id="crud-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
     <div class="relative p-4 w-full max-w-md max-h-full">
-     
+        <!-- Modal content -->
         <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-         
+            <!-- Modal header -->
             <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
                     Create Service
@@ -194,7 +187,7 @@ $conn->close();
                     <span class="sr-only">Close modal</span>
                 </button>
             </div>
-         
+            <!-- Modal body -->
             <form class="p-4 md:p-5" method="POST" id="add-service-form" action="php/add_service.php"enctype="multipart/form-data">
                 <div class="grid gap-4 mb-4 grid-cols-2">
                     <div class="col-span-2">
@@ -220,14 +213,14 @@ $conn->close();
             </form>
         </div>
     </div>
-</div> -->
+</div>
 
 <!-- edit  service modal -->
-<!-- <div id="edit-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+<div id="edit-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
     <div class="relative p-4 w-full max-w-md max-h-full">
-       
+        <!-- Modal content -->
         <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-           
+            <!-- Modal header -->
             <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
                     Edit Service
@@ -239,7 +232,7 @@ $conn->close();
                     <span class="sr-only">Close modal</span>
                 </button>
             </div>
-           
+            <!-- Modal body -->
             <form class="p-4 md:p-5" id="edit-service-form" enctype="multipart/form-data">
                 <div class="grid gap-4 mb-4 grid-cols-2">
                 <input type="text" name="serviceId" id="serviceId" class="hidden bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="serviceId" required="">
@@ -266,7 +259,7 @@ $conn->close();
             </form>
         </div>
     </div>
-</div>  -->
+</div> 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>

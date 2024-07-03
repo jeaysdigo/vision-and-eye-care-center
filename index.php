@@ -32,9 +32,12 @@ $sql = "SELECT patients.PatientID, doctors.FirstName, doctors.LastName, services
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <link rel="stylesheet" href="css/style.css">
 <script src="js/script.js"></script>
    <script src="/app.js"></script>
+
 <style>
 
 
@@ -56,13 +59,8 @@ $sql = "SELECT patients.PatientID, doctors.FirstName, doctors.LastName, services
         }
 </style>
 <body>
-<script>
- if (!navigator.serviceWorker.controller) {
-     navigator.serviceWorker.register("/sw.js").then(function(reg) {
-         console.log("Service worker has been registered for scope: " + reg.scope);
-     });
- }
-</script>
+<script>  AOS.init();</script>
+
 <nav class="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
   <div class="px-3 py-3 lg:px-5 lg:pl-3">
     <div class="flex items-center justify-between">
@@ -82,7 +80,7 @@ $sql = "SELECT patients.PatientID, doctors.FirstName, doctors.LastName, services
   <section class="mb-8 pb-8 max-w-4xl mx-auto">
   <div class="p-4 py-8 mt-8 sm:ml-64 ">
 
-    <div class="flex-1">
+    <div class="flex-1" data-aos="fade-up">
     <div id="controls-carousel" class="relative w-full p-4" data-carousel="static">
         <!-- Carousel wrapper -->
         <div class="relative h-48 overflow-hidden rounded-lg md:h-48">
@@ -121,7 +119,7 @@ $sql = "SELECT patients.PatientID, doctors.FirstName, doctors.LastName, services
     </div>
 
 
-    <div class="mb-2 rounded-lg dark:border-gray-700">
+    <div class="mb-2 rounded-lg dark:border-gray-700" >
         <div class="flex justify-between items-center px-4 font-bold text-gray-900 sm:text-2xl dark:text-white mb-2">
             <span>Our Services</span>
             <a href="services.php" class="text-base sm:text-lg text-blue-500 hover:underline">See all</a>
@@ -150,7 +148,7 @@ $sql = "SELECT patients.PatientID, doctors.FirstName, doctors.LastName, services
     </div>
     </div>
 
-    <div class="flex-1">
+    <div class="flex-1" data-aos="fade-up">
         <!-- my bookings -->
         <div class="mb-2 rounded-lg dark:border-gray-700">
         <div class="flex justify-between items-center px-4 font-bold text-gray-900 sm:text-2xl dark:text-white mb-2">
