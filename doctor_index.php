@@ -167,7 +167,7 @@ $result4 = $conn->query($sql4);
                             <ul class="divide-y divide-gray-200">';
                     // Inside the PHP loop
                     while ($row = $result2->fetch_assoc()) {
-                        $cancelButtonId = 'cancelButton_' . $row["PatientID"];
+                        $doneButtonId = 'doneButton_' . $row["AppointmentID"];
                         $appointmentDate = date("g:i A - F j, Y", strtotime($row["AppointmentDate"]));
                         echo '<li class="p-4 flex flex-row md:flex-row justify-between items-center bg-gray-25 hover:bg-gray-25 rounded-lg mb-4 shadow-sm transition">
                         <div class="flex items-center">
@@ -180,9 +180,14 @@ $result4 = $conn->query($sql4);
                             <p class="text-sm  p-1 text-gray-500"><i class="bi bi-calendar-fill text-gray-400"></i> ' . $appointmentDate . '</p>
                           </div>
                         </div>
+                        <div class="flex flex-col md:flex-row items-center">
                         <a href="doctor_test.php?id=' . $row["PatientID"] .'" class="mt-4 md:mt-0 cancelButton text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
                           <i class="bi bi-x-lg"></i> Take test
                         </a>
+                         <button id="' . $doneButtonId . '" class="mt-4 md:mt-0 doneButton text-blue-500 bg-blue-100 hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
+                            <i class="bi bi-x-lg"></i> Mark as Done
+                         </button>
+                        </div>
                       </li>';
                     }
 
@@ -221,9 +226,6 @@ $result4 = $conn->query($sql4);
                         <p class="text-sm  p-1 text-gray-500"><i class="bi bi-calendar-fill text-gray-400"></i> ' . $appointmentDate . '</p>
                       </div>
                     </div>
-                    <button id="' . $cancelButtonId . '" class="mt-4 md:mt-0 cancelButton text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
-                      <i class="bi bi-x-lg"></i> Cancel
-                    </button>
                   </li>';
                 }
 
@@ -323,6 +325,49 @@ $result4 = $conn->query($sql4);
                             Swal.fire(
                                 'Error!',
                                 'Failed to cancel the appointment. Please try again.',
+                                'error'
+                            );
+                        }
+                    });
+                }
+            });
+        });
+        
+         // Attach click event listener to each cancel button
+         $('.doneButton').on('click', function() {
+            var appointmentId = $(this).attr('id').replace('doneButton_', '');
+            Swal.fire({
+                title: 'Mark as Done?',
+                text: "Once the test is done, you can mark the appointment as done.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Mark as Done'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    console.log('marking done..', appointmentId);
+                    // Make an AJAX request to cancel the appointment
+                    $.ajax({
+                        type: 'POST',
+                        url: 'php/complete_book.php', // Replace with the URL of your cancel appointment PHP script
+                        data: { appointmentId: appointmentId },
+                        success: function(response) {
+                            console.log('marking done..', appointmentId);
+                            Swal.fire(
+                                'Successfully marked as done!',
+                                'The appointment has been marked as done',
+                                'success'
+                            ).then((result) => {
+                                // Reload the page after successful cancellation
+                                location.reload();
+                            });
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(xhr.responseText);
+                            Swal.fire(
+                                'Error!',
+                                'Failed to mark as done. Please try again.',
                                 'error'
                             );
                         }

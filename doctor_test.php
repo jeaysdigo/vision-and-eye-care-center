@@ -13,8 +13,7 @@ $patientId = isset($_GET['id']) ? $_GET['id'] : 999999999;
 $walkin = isset($_GET['id']) ? 0 : 1;
 
 
-// Initialize variables 
-// init step 1
+// Initialize variables
 $firstName = '';
 $lastName = '';
 $dateOfBirth = '';
@@ -26,81 +25,55 @@ $address = '';
 $municipality = '';
 $city = '';
 $zipCode = '';
-$case_no = '';
-$co_no = '';
-$bp_sys = '';
-$bp_dia = '';
-$resp_rate = '';
-$pulse_rate = '';
-$glasses_od_sph = '';
-$glasses_od_cyl = '';
-$glasses_od_add = '';
-$glasses_os_sph = '';
-$glasses_os_cyl = '';
-$glasses_os_add = '';
-$contact_lens_od = '';
-$contact_lens_os = '';
-$type_scl = '';
-$type_gp = '';
-$type_toric = '';
-
-// init step 2
-$visual_ocular = '';
-$medical_history_present = '';
-$medical_history_past = '';
-$family_history = '';
-$family_history_ocular = '';
-$family_history_medical = '';
 
 // init step 3
-$visual_acuity_unaided_distance_od = '';
-$visual_acuity_unaided_distance_os = '';
-$visual_acuity_unaided_distance_ou = '';
-$visual_acuity_unaided_near_od = '';
-$visual_acuity_unaided_near_os = '';
-$visual_acuity_unaided_near_ou = '';
-$visual_acuity_pinhole_od = '';
-$visual_acuity_pinhole_os = '';
-$visual_acuity_far_od = '';
-$visual_acuity_far_os = '';
-$visual_acuity_far_ou = '';
-$visual_acuity_near_od = '';
-$visual_acuity_near_os = '';
-$visual_acuity_near_ou = '';
-$pupil_shape_od = '';
-$pupil_shape_os = '';
-$pupil_diameter_od = '';
-$pupil_diameter_os = '';
+$visualAcuityUnaidedDistanceOd = '';
+$visualAcuityUnaidedDistanceOs = '';
+$visualAcuityUnaidedDistanceOu = '';
+$visualAcuityUnaidedNearOd = '';
+$visualAcuityUnaidedNearOs = '';
+$visualAcuityUnaidedNearOu = '';
+$visualAcuityPinholeOd = '';
+$visualAcuityPinholeOs = '';
+$visualAcuityFarOd = '';
+$visualAcuityFarOs = '';
+$visualAcuityFarOu = '';
+$visualAcuityNearOd = '';
+$visualAcuityNearOs = '';
+$visualAcuityNearOu = '';
+$pupilShapeOd = '';
+$pupilShapeOs = '';
+$pupilDiameterOd = '';
+$pupilDiameterOs = '';
 $pd = '';
 $de = '';
-$eyes_not_aligned = '';
-$abnormal_head_posture = '';
-$face_tilt_direction = '';
-$head_tilt_direction = '';
-$other_pertinent_observations = '';
-$motor_sensory_push_up_amp = '';
-$motor_sensory_npc = '';
-$motor_sensory_corneal_reflex_od = '';
-$motor_sensory_corneal_reflex_os = '';
-$motor_sensory_alternate_cover_test_far_sc = '';
-$motor_sensory_alternate_cover_test_far_cc = '';
-$motor_sensory_alternate_cover_test_near_sc = '';
-$motor_sensory_alternate_cover_test_near_cc = '';
-$motor_sensory_motility_test_smooth_pursuit = '';
-$motor_sensory_motility_test_saccadic = '';
-$motor_sensory_pupillary_reflex_dlr_od = '';
-$motor_sensory_pupillary_reflex_dlr_os = '';
-$motor_sensory_pupillary_reflex_indirect_od = '';
-$motor_sensory_pupillary_reflex_indirect_os = '';
-$motor_sensory_pupillary_reflex_accommodation_od = '';
-$motor_sensory_pupillary_reflex_accommodation_os = '';
-$motor_sensory_pupillary_reflex_swinging_flashlight_od = '';
-$motor_sensory_pupillary_reflex_swinging_flashlight_os = '';
-$motor_sensory_amsler_test_od = '';
-$motor_sensory_amsler_test_os = '';
-$motor_sensory_proj_test_od = '';
-$motor_sensory_proj_test_os = '';
-
+$eyesNotAligned = '';
+$abnormalHeadPosture = '';
+$faceTiltDirection = '';
+$headTiltDirection = '';
+$otherPertinentObservations = '';
+$motorSensoryPushUpAmp = '';
+$motorSensoryNpc = '';
+$motorSensoryCornealReflexOd = '';
+$motorSensoryCornealReflexOs = '';
+$motorSensoryAlternateCoverTestFarSc = '';
+$motorSensoryAlternateCoverTestFarCc = '';
+$motorSensoryAlternateCoverTestNearSc = '';
+$motorSensoryAlternateCoverTestNearCc = '';
+$motorSensoryMotilityTestSmoothPursuit = '';
+$motorSensoryMotilityTestSaccadic = '';
+$motorSensoryPupillaryReflexDlrOd = '';
+$motorSensoryPupillaryReflexDlrOs = '';
+$motorSensoryPupillaryReflexIndirectOd = '';
+$motorSensoryPupillaryReflexIndirectOs = '';
+$motorSensoryPupillaryReflexAccommodationOd = '';
+$motorSensoryPupillaryReflexAccommodationOs = '';
+$motorSensoryPupillaryReflexSwingingFlashlightOd = '';
+$motorSensoryPupillaryReflexSwingingFlashlightOs = '';
+$motorSensoryAmslerTestOd = '';
+$motorSensoryAmslerTestOs = '';
+$motorSensoryProjTestOd = '';
+$motorSensoryProjTestOs = '';
 
 
 
@@ -138,43 +111,6 @@ if (isset($_GET['id'])) {
         echo "Error: " . $conn->error;
     }
 }
-if (isset($_GET['testId'])) { 
-    $testId = $_GET['testId'];
-    $sql = "SELECT * FROM test WHERE testID = ?";
-    if ($stmt = $conn->prepare($sql)) {
-        $stmt->bind_param('i', $testId);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if ($row = $result->fetch_assoc()) {
-            // List of columns you want to fetch
-            $columns = [
-                'FirstName', 'LastName', 'DateOfBirth', 'Gender', 'ContactNumber', 'Occupation', 'Email',
-                'Address', 'Municipality', 'City', 'ZipCode',
-                'case_no', 'co_no', 'bp_sys', 'bp_dia', 'resp_rate', 'pulse_rate',
-                'glasses_od_sph', 'glasses_od_cyl', 'glasses_od_add', 'glasses_os_sph', 'glasses_os_cyl', 'glasses_os_add',
-                'contact_lens_od', 'contact_lens_os', 'type_scl', 'type_gp', 'type_toric',
-                'visual_ocular', 'medical_history_present', 'medical_history_past',
-                'family_history', 'family_history_ocular', 'family_history_medical'
-            ];
-
-            // Dynamically assign variables
-            foreach ($columns as $column) {
-                if (isset($row[$column])) {
-                    ${lcfirst($column)} = $row[$column];
-                } else {
-                    ${lcfirst($column)} = '';
-                }
-            }
-        } else {
-            header('location: error.php');
-        }
-        $stmt->close();
-    } else {
-        echo "Error: " . $conn->error;
-    }
-}
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -291,25 +227,25 @@ if (isset($_GET['testId'])) {
 
         <div class="mb-4">
             <label for="case_no">Case Number: <span class="text-red-600 text-sm">* </span></label>
-            <input value="<?php echo $case_no?>" type="text" id="case_no" name="case_no" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5" required>
+            <input type="text" id="case_no" name="case_no" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5" required>
             <p class="text-sm text-red-600 dark:text-red-500" id="case_no-error"></p>
         </div>
 
         <label for="co_no">CO Number:  <span class="text-red-600 text-sm">* </span></label>
-        <input value="<?php echo $co_no?>" type="text" id="co_no" name="co_no" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5"><br><br>
+        <input type="text" id="co_no" name="co_no" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5"><br><br>
 
         <label for="bp">Blood Pressure:</label>
         <div class="flex p-2">
-            <input value="<?php echo $bp_sys?>"  type="text" id="bp_sys" name="bp_sys" placeholder="SYS"class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5">
+            <input type="text" id="bp_sys" name="bp_sys" placeholder="SYS"class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5">
             <p class="w-4 m-2 text-gray-600"> / </p>
-            <input value="<?php echo $bp_dia?>" type="text" id="bp_dia" name="bp_dia" placeholder="DIA" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5"><br><br>
+            <input type="text" id="bp_dia" name="bp_dia" placeholder="DIA" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5"><br><br>
         </div>
 
         <label for="resp_rate">Respiratory Rate:</label>
-        <input  value="<?php echo $resp_rate?>" type="text" id="resp_rate" name="resp_rate" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5"><br><br>
+        <input type="text" id="resp_rate" name="resp_rate" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5"><br><br>
 
         <label for="pulse_rate">Pulse Rate:</label>
-        <input  value="<?php echo $pulse_rate?>" type="text" id="pulse_rate" name="pulse_rate" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5"><br><br>
+        <input type="text" id="pulse_rate" name="pulse_rate" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5"><br><br>
 
         Glasses
         <div class="flex space-x-4 mb-2">
@@ -317,13 +253,13 @@ if (isset($_GET['testId'])) {
                 <p for="glasses_od">OD:</p>
             </div>
             <div class="w-1/4">
-                <input value="<?php echo $glasses_od_sph?>" type="text" id="glasses_od" name="glasses_od_sph" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5" placeholder="Sph">
+                <input type="text" id="glasses_od" name="glasses_od_sph" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5" placeholder="Sph">
             </div>
             <div class="w-1/4">
-                <input value="<?php echo $glasses_od_cyl?>"type="text" id="glasses_od" name="glasses_od_cyl" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5" placeholder="Cyl">
+                <input type="text" id="glasses_od" name="glasses_od_cyl" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5" placeholder="Cyl">
             </div>
             <div class="w-1/4">
-                <input value="<?php echo $glasses_od_add?>" type="text" id="glasses_od" name="glasses_od_add" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5" placeholder="Add">
+                <input type="text" id="glasses_od" name="glasses_od_add" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5" placeholder="Add">
             </div>
         </div>
         
@@ -332,13 +268,13 @@ if (isset($_GET['testId'])) {
                 <p for="glasses_os">OS:</p>
             </div>
             <div class="w-1/4">
-                <input value="<?php echo $glasses_os_sph?>" type="text" id="glasses_os_sph" name="glasses_os_sph" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5" placeholder="Sph">
+                <input type="text" id="glasses_os_sph" name="glasses_os_sph" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5" placeholder="Sph">
             </div>
             <div class="w-1/4">
-                <input value="<?php echo $glasses_os_cyl?> "type="text" id="glasses_os_cyl" name="glasses_os_cyl" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5" placeholder="Cyl">
+                <input type="text" id="glasses_os_cyl" name="glasses_os_cyl" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5" placeholder="Cyl">
             </div>
             <div class="w-1/4">
-                <input value="<?php echo $glasses_os_add?>" type="text" id="glasses_os_add" name="glasses_os_add" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5" placeholder="Add">
+                <input type="text" id="glasses_os_add" name="glasses_os_add" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5" placeholder="Add">
             </div>
         </div>
 
@@ -347,14 +283,14 @@ if (isset($_GET['testId'])) {
             <div class="w-1/4">
                 <label for="contact_lens_od">OD:</label> </div>
             <div class="w-full">
-                <input value="<?php echo $contact_lens_od?>" type="text" id="contact_lens_od" name="contact_lens_od" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5"><br><br>
+                <input type="text" id="contact_lens_od" name="contact_lens_od" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5"><br><br>
             </div>
         </div>
         <div class="flex space-x-4">
             <div class="w-1/4">
                 <label for="contact_lens_od">OS:</label> </div>
             <div class="w-full">
-                <input value="<?php echo $contact_lens_os?>" type="text" id="contact_lens_os" name="contact_lens_os" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5"><br><br>
+                <input type="text" id="contact_lens_os" name="contact_lens_os" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5"><br><br>
             </div>
         </div>
 
@@ -365,7 +301,7 @@ if (isset($_GET['testId'])) {
             </div>
 
             <div class="flex items-center">
-                <input value="<?php echo $type_gp?>" type="checkbox" id="type_gp" name="type_gp" value="1" class="h-5 w-5 text-blue-600 rounded border-blue-300 focus:ring-indigo-500">
+                <input type="checkbox" id="type_gp" name="type_gp" value="1" class="h-5 w-5 text-blue-600 rounded border-blue-300 focus:ring-indigo-500">
                 <label for="type_gp" class="ml-2 text-sm text-gray-700">Type GP</label>
             </div>
 
@@ -383,7 +319,7 @@ if (isset($_GET['testId'])) {
     <div class="step">
         <p class="font-medium my-4">II. Patient's History</p>
         <label for="visual_ocular">Visual and Ocular:</label>
-        <textarea value="<?php echo $visualOcular?>" id="visual_ocular" name="visual_ocular" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5"></textarea><br><br>
+        <textarea id="visual_ocular" name="visual_ocular" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-full p-2.5"></textarea><br><br>
 
         <p class="font-medium mb-2">Medical</p>
         <label for="medical_history_present">Present Illness:</label>

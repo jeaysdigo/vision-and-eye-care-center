@@ -23,6 +23,7 @@ if (isset($_SESSION['patientId'])) {
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <link rel="icon" type="image/x-icon" href="./assets/icon.png">
 </head>
 <body>
 <script>

@@ -17,7 +17,7 @@ $sql = "SELECT patients.PatientID, doctors.FirstName, doctors.LastName, services
                 INNER JOIN doctors ON appointments.DoctorID = doctors.DoctorID
                 INNER JOIN patients ON appointments.PatientID = patients.PatientID
                 INNER JOIN services ON appointments.ServiceID = services.ServiceID 
-                WHERE appointments.PatientID = $patientId AND appointments.Status = 'InReview'";
+                WHERE appointments.PatientID = $patientId AND appointments.Status = 'InReview' AND appointments.Status = 'Approved'" ;
                 $result = $conn->query($sql);
 ?>
 <!DOCTYPE html>
@@ -35,6 +35,7 @@ $sql = "SELECT patients.PatientID, doctors.FirstName, doctors.LastName, services
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/x-icon" href="./assets/icon.png">
 <script src="js/script.js"></script>
    <script src="/app.js"></script>
 

@@ -18,6 +18,7 @@ $firstName = $_SESSION['firstName'];
   <title>Vision and Eye Care Center</title>
   <link href="https://cdn.jsdelivr.net/npm/flowbite@2.3.0/dist/flowbite.min.css" rel="stylesheet"></head>
   <link rel="stylesheet" href="css/style.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="js/script.js"></script>
 <style>
     /* Hide scrollbar for Chrome, Safari and Opera */
@@ -125,7 +126,7 @@ if (isset($_GET['id'])) {
                         
                         <!-- Add more rows for additional profile details -->
                     </table>
-                    <a href="doctor_test.php?id=<?php echo $patientID ?>" class="w-full h-12 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Take Examination</a>
+                    <button id="buttonTest" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Take Test</button>
 
                 </div>
             </div>
@@ -177,6 +178,15 @@ if (isset($_GET['id'])) {
 </section>
 
 <?php require_once 'php/bottombar_doctor.php';?>
+<script>
+  $(document).ready(function() {
+    $('#buttonTest').click(function() {
+      // Replace with your PHP variable as needed
+      var patientID = <?php echo json_encode($patientID); ?>;
+      window.location.href = 'doctor_test.php?id=' + patientID;
+    });
+  });
+</script>
 
         <script src="https://cdn.jsdelivr.net/npm/flowbite@2.3.0/dist/flowbite.min.js"></script>
 </body>
