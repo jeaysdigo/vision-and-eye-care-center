@@ -119,7 +119,7 @@ if ($result->num_rows > 0) {
                                 <?= htmlspecialchars($service['Address']) ?>
                             </td>
                             <td class="px-6 py-4">
-                                <?= $service['DateCreated'] ?>
+                            <?= date("F j, Y g:i A ", strtotime($service['DateCreated'] )); ?>
                             </td>
                             <td class="px-6 py-4 text-right">
                                 <button type="button"data-modal-target="edit-patient-modal" data-modal-toggle="edit-patient-modal" data-patient-id="<?php echo $service['PatientID'] ?>" class="edit-patient-button mx-1 inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
